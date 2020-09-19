@@ -116,18 +116,19 @@ public class ParamsProcessorUtil {
 	private Integer userInactivityThresholdInMinutes = 30;
     private Integer userActivitySignResponseDelayInMinutes = 5;
     private Boolean defaultAllowDuplicateExtUserid = true;
+	private Boolean defaultEndWhenNoModerator = false;
 
 	private String formatConfNum(String s) {
 		if (s.length() > 5) {
-			Long confNumL = Long.parseLong(s);
-
-			Locale numFormatLocale = new Locale("en", "US");
-			String formatPattern = "#,###";
-			DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols(numFormatLocale);
-			unusualSymbols.setGroupingSeparator(' ');
-			DecimalFormat numFormatter = new DecimalFormat(formatPattern, unusualSymbols);
-			numFormatter.setGroupingSize(3);
-			return numFormatter.format(confNumL);
+			/* Reverse conference number.
+			* Put a whitespace every third char.
+			* Reverse it again to display it correctly.
+			* Trim leading whitespaces.
+			* */
+			String confNumReversed = new StringBuilder(s).reverse().toString();
+			String confNumSplit = confNumReversed.replaceAll("(.{3})", "$1 ");
+			String confNumL = new StringBuilder(confNumSplit).reverse().toString().trim();
+			return confNumL;
 		}
 
 		return s;
@@ -422,6 +423,15 @@ public class ParamsProcessorUtil {
             }
         }
 
+        boolean endWhenNoModerator = defaultEndWhenNoModerator;
+        if (!StringUtils.isEmpty(params.get(ApiParams.END_WHEN_NO_MODERATOR))) {
+          try {
+	          endWhenNoModerator = Boolean.parseBoolean(params.get(ApiParams.END_WHEN_NO_MODERATOR));
+          } catch (Exception ex) {
+            log.warn("Invalid param [endWhenNoModerator] for meeting=[{}]", internalMeetingId);
+          }
+        }
+
         String guestPolicy = defaultGuestPolicy;
         if (!StringUtils.isEmpty(params.get(ApiParams.GUEST_POLICY))) {
         	guestPolicy = params.get(ApiParams.GUEST_POLICY);
@@ -487,6 +497,11 @@ public class ParamsProcessorUtil {
             String moderatorOnlyMessage = substituteKeywords(moderatorOnlyMessageTemplate,
                     dialNumber, telVoice, meetingName);
             meeting.setModeratorOnlyMessage(moderatorOnlyMessage);
+        }
+
+        if (!StringUtils.isEmpty(params.get(ApiParams.MEETING_ENDED_CALLBACK_URL))) {
+        	String meetingEndedCallbackURL = params.get(ApiParams.MEETING_ENDED_CALLBACK_URL);
+        	meeting.setMeetingEndedCallbackURL(meetingEndedCallbackURL);
         }
 
         meeting.setMaxInactivityTimeoutMinutes(maxInactivityTimeoutMinutes);
@@ -1135,4 +1150,10 @@ public class ParamsProcessorUtil {
 	public void setAllowDuplicateExtUserid(Boolean allow) {
 		this.defaultAllowDuplicateExtUserid = allow;
 	}
+
+	public void setEndWhenNoModerator(Boolean val) {
+		this.defaultEndWhenNoModerator = val;
+	}
+
+
 }

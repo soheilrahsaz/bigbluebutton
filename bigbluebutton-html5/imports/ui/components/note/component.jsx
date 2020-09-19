@@ -40,6 +40,7 @@ const Note = (props) => {
   } = props;
 
   const url = isLocked ? NoteService.getReadOnlyURL() : NoteService.getNoteURL();
+
   return (
     <div
       data-test="note"

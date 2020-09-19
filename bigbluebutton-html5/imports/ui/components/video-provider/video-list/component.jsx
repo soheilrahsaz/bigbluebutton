@@ -9,15 +9,17 @@ import { withDraggableConsumer } from '../../media/webcam-draggable-overlay/cont
 import AutoplayOverlay from '../../media/autoplay-overlay/component';
 import logger from '/imports/startup/client/logger';
 import playAndRetry from '/imports/utils/mediaElementPlayRetry';
+import VideoService from '/imports/ui/components/video-provider/service';
+import Button from '/imports/ui/components/button/component';
 
 const propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+  streams: PropTypes.arrayOf(PropTypes.object).isRequired,
   onMount: PropTypes.func.isRequired,
-  getStats: PropTypes.func.isRequired,
-  stopGettingStats: PropTypes.func.isRequired,
-  enableVideoStats: PropTypes.bool.isRequired,
   webcamDraggableDispatch: PropTypes.func.isRequired,
   intl: PropTypes.objectOf(Object).isRequired,
+  swapLayout: PropTypes.bool.isRequired,
+  numberOfPages: PropTypes.number.isRequired,
+  currentVideoPageIndex: PropTypes.number.isRequired,
 };
 
 const intlMessages = defineMessages({
@@ -38,6 +40,12 @@ const intlMessages = defineMessages({
   },
   autoplayAllowLabel: {
     id: 'app.videoDock.autoplayAllowLabel',
+  },
+  nextPageLabel: {
+    id: 'app.video.pagination.nextPage',
+  },
+  prevPageLabel: {
+    id: 'app.video.pagination.prevPage',
   },
 });
 
@@ -113,8 +121,8 @@ class VideoList extends Component {
   }
 
   setOptimalGrid() {
-    const { users } = this.props;
-    let numItems = users.length;
+    const { streams } = this.props;
+    let numItems = streams.length;
     if (numItems < 1 || !this.canvas || !this.grid) {
       return;
     }
@@ -203,50 +211,96 @@ class VideoList extends Component {
     this.ticking = true;
   }
 
+  renderNextPageButton() {
+    const { intl, numberOfPages, currentVideoPageIndex } = this.props;
+
+    if (!VideoService.isPaginationEnabled() || numberOfPages <= 1) return null;
+
+    const currentPage = currentVideoPageIndex + 1;
+    const nextPageLabel = intl.formatMessage(intlMessages.nextPageLabel);
+    const nextPageDetailedLabel = `${nextPageLabel} (${currentPage}/${numberOfPages})`;
+
+    return (
+      <Button
+        role="button"
+        aria-label={nextPageLabel}
+        color="primary"
+        icon="right_arrow"
+        size="md"
+        onClick={VideoService.getNextVideoPage}
+        label={nextPageDetailedLabel}
+        hideLabel
+        className={cx(styles.nextPage)}
+      />
+    );
+  }
+
+  renderPreviousPageButton() {
+    const { intl, currentVideoPageIndex, numberOfPages } = this.props;
+
+    if (!VideoService.isPaginationEnabled() || numberOfPages <= 1) return null;
+
+    const currentPage = currentVideoPageIndex + 1;
+    const prevPageLabel = intl.formatMessage(intlMessages.prevPageLabel);
+    const prevPageDetailedLabel = `${prevPageLabel} (${currentPage}/${numberOfPages})`;
+
+    return (
+      <Button
+        role="button"
+        aria-label={prevPageLabel}
+        color="primary"
+        icon="left_arrow"
+        size="md"
+        onClick={VideoService.getPreviousVideoPage}
+        label={prevPageDetailedLabel}
+        hideLabel
+        className={cx(styles.previousPage)}
+      />
+    );
+  }
+
   renderVideoList() {
     const {
       intl,
-      users,
+      streams,
       onMount,
-      getStats,
-      stopGettingStats,
-      enableVideoStats,
       swapLayout,
     } = this.props;
     const { focusedId } = this.state;
 
-    return users.map((user) => {
-      const isFocused = focusedId === user.userId;
+    const numOfStreams = streams.length;
+    return streams.map((stream) => {
+      const { cameraId, userId, name } = stream;
+      const isFocused = focusedId === cameraId;
       const isFocusedIntlKey = !isFocused ? 'focus' : 'unfocus';
       let actions = [];
 
-      if (users.length > 2) {
+      if (numOfStreams > 2) {
         actions = [{
           label: intl.formatMessage(intlMessages[`${isFocusedIntlKey}Label`]),
           description: intl.formatMessage(intlMessages[`${isFocusedIntlKey}Desc`]),
-          onClick: () => this.handleVideoFocus(user.userId),
+          onClick: () => this.handleVideoFocus(cameraId),
         }];
       }
 
       return (
         <div
-          key={user.userId}
+          key={cameraId}
           className={cx({
             [styles.videoListItem]: true,
-            [styles.focused]: focusedId === user.userId && users.length > 2,
+            [styles.focused]: focusedId === cameraId && numOfStreams > 2,
           })}
         >
           <VideoListItemContainer
-            numOfUsers={users.length}
-            user={user}
+            numOfStreams={numOfStreams}
+            cameraId={cameraId}
+            userId={userId}
+            name={name}
             actions={actions}
             onMount={(videoRef) => {
               this.handleCanvasResize();
-              onMount(user.userId, videoRef);
+              onMount(cameraId, videoRef);
             }}
-            getStats={(videoRef, callback) => getStats(user.userId, videoRef, callback)}
-            stopGettingStats={() => stopGettingStats(user.userId)}
-            enableVideoStats={enableVideoStats}
             swapLayout={swapLayout}
           />
         </div>
@@ -255,7 +309,7 @@ class VideoList extends Component {
   }
 
   render() {
-    const { users, intl } = this.props;
+    const { streams, intl } = this.props;
     const { optimalGrid, autoplayBlocked } = this.state;
 
     const canvasClassName = cx({
@@ -273,7 +327,10 @@ class VideoList extends Component {
         }}
         className={canvasClassName}
       >
-        {!users.length ? null : (
+
+        {this.renderPreviousPageButton()}
+
+        {!streams.length ? null : (
           <div
             ref={(ref) => {
               this.grid = ref;
@@ -296,6 +353,9 @@ class VideoList extends Component {
             handleAllowAutoplay={this.handleAllowAutoplay}
           />
         )}
+
+        {this.renderNextPageButton()}
+
       </div>
     );
   }

@@ -55,9 +55,9 @@ class VideoPlayer extends Component {
       },
       file: {
         attributes: {
-			controls: 'controls',
-			autoplay: 'autoplay',
-			playsinline: 'playsinline',
+          controls: 'controls',
+          autoplay: 'autoplay',
+          playsinline: 'playsinline',
         },
       },
       dailymotion: {

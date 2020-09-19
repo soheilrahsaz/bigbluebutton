@@ -8,13 +8,16 @@ import { notify } from '/imports/ui/services/notification';
 import playAndRetry from '/imports/utils/mediaElementPlayRetry';
 import iosWebviewAudioPolyfills from '/imports/utils/ios-webview-audio-polyfills';
 import { tryGenerateIceCandidates } from '/imports/utils/safari-webrtc';
+import { monitorAudioConnection } from '/imports/utils/stats';
 import AudioErrors from './error-codes';
+
+const ENABLE_NETWORK_MONITORING = Meteor.settings.public.networkMonitoring.enableNetworkMonitoring;
 
 const MEDIA = Meteor.settings.public.media;
 const MEDIA_TAG = MEDIA.mediaTag;
 const ECHO_TEST_NUMBER = MEDIA.echoTestNumber;
 const MAX_LISTEN_ONLY_RETRIES = 1;
-const LISTEN_ONLY_CALL_TIMEOUT_MS = 15000;
+const LISTEN_ONLY_CALL_TIMEOUT_MS = MEDIA.listenOnlyCallTimeout || 15000;
 
 const CALL_STATES = {
   STARTED: 'started',
@@ -49,6 +52,7 @@ class AudioManager {
     this.useKurento = Meteor.settings.public.kurento.enableListenOnly;
     this.failedMediaElements = [];
     this.handlePlayElementFailed = this.handlePlayElementFailed.bind(this);
+    this.monitor = this.monitor.bind(this);
   }
 
   init(userData) {
@@ -277,6 +281,31 @@ class AudioManager {
     return this.bridge.transferCall(this.onAudioJoin.bind(this));
   }
 
+  onVoiceUserChanges(fields) {
+    if (fields.muted !== undefined && fields.muted !== this.isMuted) {
+      let muteState;
+      this.isMuted = fields.muted;
+
+      if (this.isMuted) {
+        muteState = 'selfMuted';
+        this.mute();
+      } else {
+        muteState = 'selfUnmuted';
+        this.unmute();
+      }
+
+      window.parent.postMessage({ response: muteState }, '*');
+    }
+
+    if (fields.talking !== undefined && fields.talking !== this.isTalking) {
+      this.isTalking = fields.talking;
+    }
+
+    if (this.isMuted) {
+      this.isTalking = false;
+    }
+  }
+
   onAudioJoin() {
     this.isConnecting = false;
     this.isConnected = true;
@@ -285,21 +314,8 @@ class AudioManager {
     if (!this.muteHandle) {
       const query = VoiceUsers.find({ intId: Auth.userID }, { fields: { muted: 1, talking: 1 } });
       this.muteHandle = query.observeChanges({
-        changed: (id, fields) => {
-          if (fields.muted !== undefined && fields.muted !== this.isMuted) {
-            this.isMuted = fields.muted;
-            const muteState = this.isMuted ? 'selfMuted' : 'selfUnmuted';
-            window.parent.postMessage({ response: muteState }, '*');
-          }
-
-          if (fields.talking !== undefined && fields.talking !== this.isTalking) {
-            this.isTalking = fields.talking;
-          }
-
-          if (this.isMuted) {
-            this.isTalking = false;
-          }
-        },
+        added: (id, fields) => this.onVoiceUserChanges(fields),
+        changed: (id, fields) => this.onVoiceUserChanges(fields),
       });
     }
 
@@ -307,6 +323,7 @@ class AudioManager {
       window.parent.postMessage({ response: 'joinedAudio' }, '*');
       this.notify(this.intl.formatMessage(this.messages.info.JOINED_AUDIO));
       logger.info({ logCode: 'audio_joined' }, 'Audio Joined');
+      if (ENABLE_NETWORK_MONITORING) this.monitor();
     }
   }
 
@@ -513,6 +530,12 @@ class AudioManager {
     );
   }
 
+  monitor() {
+    const bridge = (this.useKurento && this.isListenOnly) ? this.listenOnlyBridge : this.bridge;
+    const peer = bridge.getPeerConnection();
+    monitorAudioConnection(peer);
+  }
+
   handleAllowAutoplay() {
     window.removeEventListener('audioPlayFailed', this.handlePlayElementFailed);
 
@@ -551,6 +574,29 @@ class AudioManager {
       }, 'Prompting user for action to play listen only media');
       this.autoplayBlocked = true;
     }
+  }
+
+  setSenderTrackEnabled (shouldEnable) {
+    // If the bridge is set to listen only mode, nothing to do here. This method
+    // is solely for muting outbound tracks.
+    if (this.isListenOnly) return;
+
+    // Bridge -> SIP.js bridge, the only full audio capable one right now
+    const peer = this.bridge.getPeerConnection();
+    peer.getSenders().forEach(sender => {
+      const { track } = sender;
+      if (track && track.kind === 'audio') {
+        track.enabled = shouldEnable;
+      }
+    });
+  }
+
+  mute () {
+    this.setSenderTrackEnabled(false);
+  }
+
+  unmute () {
+    this.setSenderTrackEnabled(true);
   }
 }
 
