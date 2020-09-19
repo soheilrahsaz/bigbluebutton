@@ -9,7 +9,15 @@ import JoinVideoOptionsContainer from '../video-provider/video-button/container'
 import CaptionsButtonContainer from '/imports/ui/components/actions-bar/captions/container';
 import PresentationOptionsContainer from './presentation-options/component';
 
+//added for Hamkelasi
+import HamkelasiActionsDropdown from './hamkelasi-actions-dropdown/component';
+
 class ActionsBar extends PureComponent {
+	
+	constructor(props) {
+		super(props);
+	}
+	
   render() {
     const {
       amIPresenter,
@@ -43,11 +51,20 @@ class ActionsBar extends PureComponent {
     actionBarClasses[styles.centerWithActions] = amIPresenter;
     actionBarClasses[styles.center] = true;
     actionBarClasses[styles.mobileLayoutSwapped] = isLayoutSwapped && amIPresenter;
-
+		
     return (
       <div className={styles.actionsbar}>
         <div className={styles.left}>
-          <ActionsDropdown {...{
+		  {
+			  <HamkelasiActionsDropdown {...{
+				amIPresenter,
+				amIModerator,
+				intl,
+				isMeteorConnected,
+			  }}
+			  />
+		  }
+		  <ActionsDropdown {...{
             amIPresenter,
             amIModerator,
             isPollingEnabled,

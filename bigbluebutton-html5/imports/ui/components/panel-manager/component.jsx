@@ -58,6 +58,10 @@ const POLL_MAX_WIDTH = 400;
 const NOTE_MIN_WIDTH = DEFAULT_PANEL_WIDTH;
 const NOTE_MAX_WIDTH = 800;
 
+// Variables for resizing shared class info.
+const CLASS_INFO_MIN_WIDTH = 150;
+const CLASS_INFO_MAX_WIDTH = 350;
+
 // Variables for resizing captions.
 const CAPTIONS_MIN_WIDTH = DEFAULT_PANEL_WIDTH;
 const CAPTIONS_MAX_WIDTH = 400;

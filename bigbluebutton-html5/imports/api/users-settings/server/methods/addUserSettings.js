@@ -66,6 +66,8 @@ const currentParameters = [
   // OUTSIDE COMMANDS
   'bbb_outside_toggle_self_voice',
   'bbb_outside_toggle_recording',
+  // Hamkelasi
+  'hamkelasi_params',
 ];
 
 function valueParser(val) {

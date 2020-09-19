@@ -7,12 +7,12 @@ public:
     listenOnlyMode: true
     forceListenOnly: false
     skipCheck: false
-    clientTitle: همکلاسی
-    appName: سامانه کلاس آنلاین همکلاسی
+    clientTitle: BigBlueButton
+    appName: BigBlueButton HTML5 Client
     bbbServerVersion: 2.2
-    copyright: "©2020 همکلاسی"
-    html5ClientBuild: 968
-    helpLink: https://docs.hamkelasi.co/online_class
+    copyright: "©2020 BigBlueButton Inc."
+    html5ClientBuild: HTML5_CLIENT_VERSION
+    helpLink: https://bigbluebutton.org/html5/
     lockOnJoin: true
     cdn: ""
     basename: "/html5client"
@@ -36,7 +36,7 @@ public:
         userJoinAudioAlerts: false
         userJoinPushAlerts: false
         fallbackLocale: en
-        overrideLocale: fa
+        overrideLocale: null
       audio:
         inputDeviceId: undefined
         outputDeviceId: undefined
@@ -85,7 +85,7 @@ public:
     enableNetworkMonitoring: false
     packetLostThreshold: 10
   kurento:
-    wsUrl: wss://192.168.79.102/bbb-webrtc-sfu
+    wsUrl: HOST
     chromeDefaultExtensionKey: akgoaoikmbmhcopjgakkcepdgdgkjfbc
     chromeDefaultExtensionLink: https://chrome.google.com/webstore/detail/bigbluebutton-screenshare/akgoaoikmbmhcopjgakkcepdgdgkjfbc
     chromeExtensionKey: KEY
@@ -100,7 +100,7 @@ public:
             max: 2560
           height:
             max: 1600
-        audio: true
+        audio: false
       chromeScreenshareSources:
         - window
         - screen
@@ -109,19 +109,19 @@ public:
       - id: low
         name: Low quality
         default: false
-        bitrate: 50
+        bitrate: 100
       - id: medium
         name: Medium quality
         default: true
-        bitrate: 100
+        bitrate: 200
       - id: high
         name: High quality
         default: false
-        bitrate: 250
+        bitrate: 500
       - id: hd
         name: High definition
         default: false
-        bitrate: 400
+        bitrate: 800
     enableScreensharing: true
     enableVideo: true
     enableVideoStats: false

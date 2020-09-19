@@ -100,7 +100,7 @@ class App extends Component {
     this.state = {
       enableResize: !window.matchMedia(MOBILE_MEDIA).matches,
     };
-
+	
     this.handleWindowResize = throttle(this.handleWindowResize).bind(this);
     this.shouldAriaHide = this.shouldAriaHide.bind(this);
   }

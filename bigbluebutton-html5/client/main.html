@@ -30,7 +30,7 @@ with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
     body {
       position: fixed;
       height: 100%;
-      font-family: 'Source Sans Pro', Arial, sans-serif;
+      font-family: IRANSansWeb, 'Source Sans Pro', Arial, sans-serif;
       font-size: 1rem; /* 16px */
       background-color: #06172A;
     }
@@ -64,6 +64,32 @@ with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
     document.addEventListener('gesturestart', function (e) {
       e.preventDefault();
     });
+	
+	// added for Hamkelasi (to remove CSS duplications)
+	window.onload = function(e) {
+	
+		setTimeout(() => {
+			var uniqueRules = [];
+			var sSheetList = document.styleSheets;
+			for (var sSheet = 0; sSheet < sSheetList.length; sSheet++)
+			{
+				var ruleList = document.styleSheets[sSheet].cssRules;
+				for (var rule = 0; rule < ruleList.length; rule ++)
+				{
+					if(uniqueRules.indexOf(ruleList[rule].cssText) == -1)
+					{
+						uniqueRules.push(ruleList[rule].cssText);
+					}
+				}
+				document.styleSheets[sSheet].ownerNode.parentNode.removeChild(document.styleSheets[sSheet].ownerNode);
+			}
+			
+			var style = document.createElement('style');
+			style.type = 'text/css';
+			style.innerHTML = uniqueRules.join("\n");
+			document.getElementsByTagName('head')[0].appendChild(style);
+		}, 3000);
+	};
   </script>
   <script src="compatibility/adapter.js?v=VERSION" language="javascript"></script>
   <script src="compatibility/bowser.js?v=VERSION" language="javascript"></script>

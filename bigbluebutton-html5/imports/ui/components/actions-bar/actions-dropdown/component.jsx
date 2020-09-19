@@ -172,7 +172,7 @@ class ActionsDropdown extends PureComponent {
             onClick={isSharingVideo ? stopExternalVideoShare : this.handleExternalVideoClick}
           />
         )
-        : null),
+        : null),	
     ]);
   }
 

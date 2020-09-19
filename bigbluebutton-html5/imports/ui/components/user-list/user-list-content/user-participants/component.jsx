@@ -6,8 +6,12 @@ import cx from 'classnames';
 import { styles } from '/imports/ui/components/user-list/user-list-content/styles';
 import _ from 'lodash';
 import { findDOMNode } from 'react-dom';
+import { notify } from '/imports/ui/services/notification';
 import UserListItemContainer from './user-list-item/container';
 import UserOptionsContainer from './user-options/container';
+
+//added for Hamkelasi
+import getFromUserSettings from '/imports/ui/services/users-settings';
 
 const propTypes = {
   compact: PropTypes.bool,
@@ -39,6 +43,10 @@ const intlMessages = defineMessages({
     id: 'app.userList.usersTitle',
     description: 'Title for the Header',
   },
+  userRaisedHandNotif: {
+    id: 'app.userList.userRaisedHandNotif',
+    description: 'User raised hand message',
+  },
 });
 
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
@@ -49,6 +57,7 @@ class UserParticipants extends Component {
 
     this.state = {
       selectedUser: null,
+	  userFilter: null,
     };
 
     this.userRefs = [];
@@ -56,8 +65,18 @@ class UserParticipants extends Component {
     this.getScrollContainerRef = this.getScrollContainerRef.bind(this);
     this.rove = this.rove.bind(this);
     this.changeState = this.changeState.bind(this);
+    this.changeFilter = this.changeFilter.bind(this);
     this.getUsers = this.getUsers.bind(this);
     this.handleClickSelectedUser = this.handleClickSelectedUser.bind(this);
+	
+	//added for Hamkelasi
+	this.raisedHandUsers = null;
+	this.invisibleUsers = ['superadmin'];
+	this.hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
+	if(this.hamkelasiParams && typeof this.hamkelasiParams.invisibleusers != "undefined" && Array.isArray(this.hamkelasiParams.invisibleusers))
+	{
+		this.invisibleUsers = this.invisibleUsers.concat(this.hamkelasiParams.invisibleusers);
+	}
   }
 
   componentDidMount() {
@@ -111,9 +130,37 @@ class UserParticipants extends Component {
       meetingIsBreakout,
     } = this.props;
 
+    // Changed for Hamkelasi
+    if (currentUser.role === ROLE_MODERATOR) {
+      const isFirstLoad = this.raisedHandUsers === null;
+      if (isFirstLoad) {
+        this.raisedHandUsers = [];
+      }
+
+      users.filter(user => currentUser.userId != user.userId).forEach((user) => {
+        const i = this.raisedHandUsers.indexOf(user.userId);
+        if (user.emoji == 'raiseHand') {
+          if (i == -1) {
+            this.raisedHandUsers.push(user.userId);
+
+            if (!isFirstLoad) {
+              notify(
+						  intl.formatMessage(intlMessages.userRaisedHandNotif, { 0: user.name }),
+						  'info', 'clear_status',
+              );
+            }
+          }
+        } else if (i >= 0) {
+          this.raisedHandUsers.splice(i, 1);
+        }
+        return user;
+      });
+    }
+	
     let index = -1;
 
-    return users.map(u => (
+	//Changed for Hamkelasi
+    return users.filter(u => (u.userId == currentUser.userId || !this.invisibleUsers.find(iu => iu == u.extId.toLowerCase())) && (!this.state.userFilter || u.name.toLowerCase().includes(this.state.userFilter))).map(u => (
       <CSSTransition
         classNames={listTransition}
         appear
@@ -160,6 +207,10 @@ class UserParticipants extends Component {
     this.setState({ selectedUser: ref });
   }
 
+  changeFilter(filter) {
+	this.setState({ userFilter: filter ? filter.toLowerCase() : null });
+  }
+
   render() {
     const {
       intl,
@@ -170,6 +221,7 @@ class UserParticipants extends Component {
       meetingIsBreakout,
     } = this.props;
 
+	//Changed for Hamkelasi	
     return (
       <div className={styles.userListColumn}>
         {
@@ -179,7 +231,7 @@ class UserParticipants extends Component {
                 <h2 className={styles.smallTitle}>
                   {intl.formatMessage(intlMessages.usersTitle)}
                   &nbsp;(
-                  {users.length}
+                  {users.filter(u =>  u.userId == currentUser.userId || !this.invisibleUsers.find(iu => iu == u.extId.toLowerCase())).length}
                   )
                 </h2>
                 {currentUser.role === ROLE_MODERATOR
@@ -197,6 +249,9 @@ class UserParticipants extends Component {
             )
             : <hr className={styles.separator} />
         }
+		<div className={styles.userSearchBoxContainer}>
+			<input type="text" className={styles.userSearchBox} placeholder="جستجو" onChange={(e) => this.changeFilter(e.target.value)}/>
+		</div>
         <div
           className={styles.scrollableList}
           tabIndex={0}

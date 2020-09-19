@@ -1,0 +1,420 @@
+@font-face {
+  font-family: "rastak";
+  src: url("/fonts/RastakBbbIcons/rastak.eot?toxbh3");
+  src: url("/fonts/RastakBbbIcons/rastak.eot?toxbh3#iefix") format("embedded-opentype"), url("/fonts/RastakBbbIcons/rastak.ttf?toxbh3") format("truetype"),
+    url("/fonts/RastakBbbIcons/rastak.woff?toxbh3") format("woff"), url("/fonts/RastakBbbIcons/rastak.svg?toxbh3#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-bbb-rastak-"],
+[class*=" icon-bbb-rastak-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "rastak" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  display: inline;
+  padding: 3px;
+  vertical-align: middle;
+  font-size: 24px;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-bbb-rastak-online-class:before {
+  content: "\e94b";
+  color: #000
+}
+.icon-bbb-rastak-school-category:before {
+  content: "\e94d";
+  color: #000
+}
+.icon-bbb-rastak-file-managment:before {
+  content: "\e955";
+  color: #000
+}
+.icon-bbb-rastak-last-update:before {
+  content: "\e956";
+  color: #000
+}
+.icon-bbb-rastak-help2:before {
+  content: "\e957";
+  color: #000
+}
+.icon-bbb-rastak-ticket:before {
+  content: "\e958";
+  color: #000
+}
+.icon-bbb-rastak-close:before {
+  content: "\e959";
+  color: #000
+}
+.icon-bbb-rastak-shortcuts:before {
+  content: "\e95a";
+  color: #000
+}
+.icon-bbb-rastak-menu:before {
+  content: "\e95b";
+  color: #000
+}
+.icon-bbb-rastak-unread-message:before {
+  content: "\e95c";
+  color: #000
+}
+.icon-bbb-rastak-read-message:before {
+  content: "\e95d";
+  color: #000
+}
+.icon-bbb-rastak-display:before {
+  content: "\e95e";
+  color: #000
+}
+.icon-bbb-rastak-peyments:before {
+  content: "\e95f";
+  color: #000
+}
+.icon-bbb-rastak-study-calendar:before {
+  content: "\e960";
+  color: #000
+}
+.icon-bbb-rastak-register-user:before {
+  content: "\e961";
+  color: #000
+}
+.icon-bbb-rastak-user-edit:before {
+  content: "\e900";
+  color: #000
+}
+.icon-bbb-rastak-info-bubble:before {
+  content: "\e901";
+  color: #000
+}
+.icon-bbb-rastak-finance:before {
+  content: "\e902";
+  color: #000
+}
+.icon-bbb-rastak-logout:before {
+  content: "\e903";
+  color: #000
+}
+.icon-bbb-rastak-online-pay:before {
+  content: "\e904";
+  color: #000
+}
+.icon-bbb-rastak-user-access:before {
+  content: "\e905";
+  color: #000
+}
+.icon-bbb-rastak-user-transport:before {
+  content: "\e906";
+  color: #000
+}
+.icon-bbb-rastak-mobile:before {
+  content: "\e907";
+  color: #000
+}
+.icon-bbb-rastak-workbook:before {
+  content: "\e908";
+  color: #000
+}
+.icon-bbb-rastak-calendar:before {
+  content: "\e909";
+  color: #000
+}
+.icon-bbb-rastak-check-list-2:before {
+  content: "\e90a";
+  color: #000
+}
+.icon-bbb-rastak-clock:before {
+  content: "\e90b";
+  color: #000
+}
+.icon-bbb-rastak-trash:before {
+  content: "\e90c";
+  color: #000
+}
+.icon-bbb-rastak-pen:before {
+  content: "\e90d";
+  color: #000
+}
+.icon-bbb-rastak-papers:before {
+  content: "\e90e";
+  color: #000
+}
+.icon-bbb-rastak-filter:before {
+  content: "\e90f";
+  color: #000
+}
+.icon-bbb-rastak-add-circle:before {
+  content: "\e910";
+  color: #000
+}
+.icon-bbb-rastak-home:before {
+  content: "\e911";
+  color: #000
+}
+.icon-bbb-rastak-info-circle:before {
+  content: "\e912";
+  color: #000
+}
+.icon-bbb-rastak-search:before {
+  content: "\e913";
+  color: #000
+}
+.icon-bbb-rastak-quick-send:before {
+  content: "\e914";
+  color: #000
+}
+.icon-bbb-rastak-tree-chart:before {
+  content: "\e915";
+  color: #000
+}
+.icon-bbb-rastak-user:before {
+  content: "\e916";
+  color: #000
+}
+.icon-bbb-rastak-lock:before {
+  content: "\e917";
+  color: #000
+}
+.icon-bbb-rastak-chat:before {
+  content: "\e918";
+  color: #000
+}
+.icon-bbb-rastak-settings:before {
+  content: "\e919";
+  color: #000
+}
+.icon-bbb-rastak-gears:before {
+  content: "\e91a";
+  color: #000
+}
+.icon-bbb-rastak-tuition:before {
+  content: "\e91b";
+  color: #000
+}
+.icon-bbb-rastak-turn-on:before {
+  content: "\e91c";
+  color: #000
+}
+.icon-bbb-rastak-settings-message:before {
+  content: "\e91d";
+  color: #000
+}
+.icon-bbb-rastak-notify:before {
+  content: "\e91e";
+  color: #000
+}
+.icon-bbb-rastak-internet:before {
+  content: "\e91f";
+  color: #000
+}
+.icon-bbb-rastak-gauge:before {
+  content: "\e920";
+  color: #000
+}
+.icon-bbb-rastak-receipt:before {
+  content: "\e921";
+  color: #000
+}
+.icon-bbb-rastak-monitor:before {
+  content: "\e922";
+  color: #000
+}
+.icon-bbb-rastak-book:before {
+  content: "\e923";
+  color: #000
+}
+.icon-bbb-rastak-import:before {
+  content: "\e924";
+  color: #000
+}
+.icon-bbb-rastak-calc:before {
+  content: "\e925";
+  color: #000
+}
+.icon-bbb-rastak-presentation-1:before {
+  content: "\e926";
+  color: #000
+}
+.icon-bbb-rastak-presentation-2:before {
+  content: "\e927";
+  color: #000
+}
+.icon-bbb-rastak-store:before {
+  content: "\e928";
+  color: #000
+}
+.icon-bbb-rastak-food:before {
+  content: "\e929";
+  color: #000
+}
+.icon-bbb-rastak-usb:before {
+  content: "\e92a";
+  color: #000
+}
+.icon-bbb-rastak-refresh:before {
+  content: "\e92b";
+  color: #000
+}
+.icon-bbb-rastak-check-list-1:before {
+  content: "\e92c";
+  color: #000
+}
+.icon-bbb-rastak-gallery:before {
+  content: "\e92d";
+  color: #000
+}
+.icon-bbb-rastak-online-quiz:before {
+  content: "\e92e";
+  color: #000
+}
+.icon-bbb-rastak-yes-no:before {
+  content: "\e92f";
+  color: #000
+}
+.icon-bbb-rastak-teacher:before {
+  content: "\e930";
+  color: #000
+}
+.icon-bbb-rastak-play:before {
+  content: "\e931";
+  color: #000
+}
+.icon-bbb-rastak-printer:before {
+  content: "\e932";
+  color: #000
+}
+.icon-bbb-rastak-student:before {
+  content: "\e933";
+  color: #000
+}
+.icon-bbb-rastak-user-group:before {
+  content: "\e934";
+  color: #000
+}
+.icon-bbb-rastak-wall-cal:before {
+  content: "\e935";
+  color: #000
+}
+.icon-bbb-rastak-learn:before {
+  content: "\e936";
+  color: #000
+}
+.icon-bbb-rastak-e-homework:before {
+  content: "\e937";
+  color: #000
+}
+.icon-bbb-rastak-map-marker:before {
+  content: "\e938";
+  color: #000
+}
+.icon-bbb-rastak-speaker:before {
+  content: "\e939";
+  color: #000
+}
+.icon-bbb-rastak-online-test:before {
+  content: "\e93a";
+  color: #000
+}
+.icon-bbb-rastak-photo:before {
+  content: "\e93b";
+  color: #000
+}
+.icon-bbb-rastak-attach:before {
+  content: "\e93c";
+  color: #000
+}
+.icon-bbb-rastak-reload:before {
+  content: "\e93d";
+  color: #000
+}
+.icon-bbb-rastak-cup:before {
+  content: "\e93e";
+  color: #000
+}
+.icon-bbb-rastak-arrow_down:before {
+  content: "\e93f";
+  color: #000
+}
+.icon-bbb-rastak-delete:before {
+  content: "\e940";
+  color: #000
+}
+.icon-bbb-rastak-edit:before {
+  content: "\e941";
+  color: #000
+}
+.icon-bbb-rastak-add:before {
+  content: "\e942";
+  color: #000
+}
+.icon-bbb-rastak-arrow-group-left:before {
+  content: "\e943";
+  color: #000
+}
+.icon-bbb-rastak-back:before {
+  content: "\e944";
+  color: #000
+}
+.icon-bbb-rastak-question-bubble:before {
+  content: "\e945";
+  color: #000
+}
+.icon-bbb-rastak-question-circle:before {
+  content: "\e946";
+  color: #000
+}
+.icon-bbb-rastak-notification:before {
+  content: "\e947";
+  color: #000
+}
+.icon-bbb-rastak-gear:before {
+  content: "\e948";
+  color: #000
+}
+.icon-bbb-rastak-tick:before {
+  content: "\e949";
+  color: #000
+}
+.icon-bbb-rastak-arrow_left:before {
+  content: "\e94a";
+  color: #000
+}
+.icon-bbb-rastak-minus-circle:before {
+  content: "\e94c";
+  color: #000
+}
+.icon-bbb-rastak-sms:before {
+  content: "\e94e";
+  color: #000
+}
+.icon-bbb-rastak-help:before {
+  content: "\e94f";
+  color: #000
+}
+.icon-bbb-rastak-hdd:before {
+  content: "\e950";
+  color: #000
+}
+.icon-bbb-rastak-wall-cal-2:before {
+  content: "\e951";
+  color: #000
+}
+.icon-bbb-rastak-support:before {
+  content: "\e952";
+  color: #000
+}
+.icon-bbb-rastak-hamkelasi:before {
+  content: "\e953";
+  color: #000
+}
+.icon-bbb-rastak-class:before {
+  content: "\e954";
+  color: #000
+}
