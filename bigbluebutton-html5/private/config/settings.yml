@@ -90,7 +90,7 @@ public:
     enableNetworkMonitoring: false
     packetLostThreshold: 10
   kurento:
-    wsUrl: wss://192.168.79.102/bbb-webrtc-sfu
+    wsUrl: wss://bbbt.hamkelasi.co/bbb-webrtc-sfu
     # Valid for video-provider. Time (ms) before its WS connection times out
     # and tries to reconnect.
     wsConnectionTimeout: 4000

@@ -122,6 +122,7 @@ class UserParticipants extends Component {
 
   getUsers() {
     const {
+	  intl,
       compact,
       setEmojiStatus,
       users,

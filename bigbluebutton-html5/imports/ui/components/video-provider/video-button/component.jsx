@@ -6,6 +6,7 @@ import VideoService from '../service';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { styles } from './styles';
 import { validIOSVersion } from '/imports/ui/components/app/service';
+import { notify } from '/imports/ui/services/notification';
 
 //Added for Hamkelasi
 import getFromUserSettings from '/imports/ui/services/users-settings';
@@ -88,28 +89,27 @@ const JoinVideoButton = ({
     if (exitVideo()) {
       VideoService.exitVideo();
 	  return;
-    } 
+    }
 	
 	//added for Hamkelasi
 	let maxAllowedVideos = hamkelasiParams && hamkelasiParams.maxallowedvideos ? hamkelasiParams.maxallowedvideos : -1;
 	if(maxAllowedVideos >= 0)
 	{
+		if (btn.current.isBlinking()) {
+		  return notify(
+				intl.formatMessage(intlMessages.verificationInProgressWarning),
+				'warning',
+				'warning',
+			);
+		}
+	
 		let verificationTimeout = setTimeout(() => {
 			btn.current.blink(false);
 		}, 20000);
 		
 		btn.current.blink(true, intl.formatMessage(intlMessages.verificationInProgressLabel));
 		  
-		let url = decodeURIComponent(hamkelasiParams.url)+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount';
-		
-		if (btn.current.isBlinking()) {
-		  return notify(
-			intl.formatMessage(intlMessages.verificationInProgressWarning),
-			'warning',
-			'warning',
-			  );
-		}
-		
+		let url = decodeURIComponent(hamkelasiParams.url)+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount';		
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', url, true);
 		xhr.responseType = 'json';
