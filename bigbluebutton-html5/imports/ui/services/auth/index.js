@@ -220,18 +220,19 @@ class Auth {
 
       const result = await makeCall('validateAuthToken', this.meetingID, this.userID, this.token, this.externUserID);
 
-      if (!result) {
+      if (result && result.invalid) {
         clearTimeout(validationTimeout);
         reject({
           error: 401,
-          description: 'User has been banned.',
+          description: result.reason,
         });
         return;
       }
 
+      Meteor.subscribe('current-user');
+
       Tracker.autorun((c) => {
         computation = c;
-        Meteor.subscribe('current-user');
 
         const selector = { meetingId: this.meetingID, userId: this.userID };
         const fields = {
