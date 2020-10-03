@@ -28,7 +28,7 @@ export default function addGroupChatMsg(meetingId, chatId, msg) {
     message: String,
     correlationId: Match.Maybe(String),
   });
-
+  
   const msgDocument = {
     ...msg,
     meetingId,

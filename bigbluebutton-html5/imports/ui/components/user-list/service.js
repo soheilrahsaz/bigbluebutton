@@ -14,6 +14,10 @@ import KEY_CODES from '/imports/utils/keyCodes';
 import AudioService from '/imports/ui/components/audio/service';
 import logger from '/imports/startup/client/logger';
 
+// added for Hamkelasi
+import VideoStreams from '/imports/api/video-streams';
+import { HamkelasiAction } from '/imports/api/hamkelasi';
+
 const CHAT_CONFIG = Meteor.settings.public.chat;
 const PUBLIC_GROUP_CHAT_ID = CHAT_CONFIG.public_group_id;
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
@@ -315,6 +319,20 @@ const curatedVoiceUser = (intId) => {
   };
 };
 
+// added for Hamkelasi
+const getVideoUser = (userId, meetingId) => {
+	const videoUser = VideoStreams.findOne(
+						  {
+							userId: userId,
+							meetingId: meetingId,
+						  }, { fields: { stream: 1 } },
+						);
+	
+	return {
+		isStreaming: videoUser ? true : false
+	};
+};
+
 const getAvailableActions = (amIModerator, isBreakoutRoom, subjectUser, subjectVoiceUser) => {
   const isDialInUser = isVoiceOnlyUser(subjectUser.userId) || subjectUser.phone_user;
   const amISubjectUser = isMe(subjectUser.userId);
@@ -482,6 +500,11 @@ const toggleUserLock = (userId, lockStatus) => {
   makeCall('toggleUserLock', userId, lockStatus);
 };
 
+const requestHamkelasiAction = (requesteeUserId, action) => {
+  makeCall('requestHamkelasiAction', Auth.meetingID, Auth.userID, requesteeUserId, action);
+  //HamkelasiAction.findOne({meetingId: Auth.meetingID, requesterUserId: Auth.userID, requesteeUserId});
+};
+
 const requestUserInformation = (userId) => {
   makeCall('requestUserInformation', userId);
 };
@@ -561,6 +584,7 @@ export default {
   getActiveChats,
   getAvailableActions,
   curatedVoiceUser,
+  getVideoUser,
   normalizeEmojiName,
   isMeetingLocked,
   isPublicChat,
@@ -572,6 +596,7 @@ export default {
   getEmoji: () => Users.findOne({ userId: Auth.userID }, { fields: { emoji: 1 } }).emoji,
   hasPrivateChatBetweenUsers,
   toggleUserLock,
+  requestHamkelasiAction,
   requestUserInformation,
   isUserPresenter,
 };

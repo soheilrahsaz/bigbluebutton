@@ -13,6 +13,7 @@ const propTypes = {
   normalizeEmojiName: PropTypes.func.isRequired,
   getScrollContainerRef: PropTypes.func.isRequired,
   toggleUserLock: PropTypes.func.isRequired,
+  requestHamkelasiAction: PropTypes.func.isRequired,
   isMeteorConnected: PropTypes.bool.isRequired,
 };
 
@@ -38,6 +39,7 @@ class UserListItem extends PureComponent {
       toggleVoice,
       hasPrivateChatBetweenUsers,
       toggleUserLock,
+	  requestHamkelasiAction,
       requestUserInformation,
       userInBreakout,
       breakoutSequence,
@@ -45,6 +47,7 @@ class UserListItem extends PureComponent {
       isMeteorConnected,
       isMe,
       voiceUser,
+      videoUser,
     } = this.props;
 
     const contents = (
@@ -69,6 +72,7 @@ class UserListItem extends PureComponent {
           user,
           hasPrivateChatBetweenUsers,
           toggleUserLock,
+		  requestHamkelasiAction,
           requestUserInformation,
           userInBreakout,
           breakoutSequence,
@@ -76,6 +80,7 @@ class UserListItem extends PureComponent {
           isMeteorConnected,
           isMe,
           voiceUser,
+          videoUser,
         }}
       />
     );

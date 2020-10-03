@@ -4,6 +4,7 @@ import { defineMessages } from 'react-intl';
 import Icon from '/imports/ui/components/icon/component';
 import { styles } from './styles';
 
+
 const messages = defineMessages({
   presenter: {
     id: 'app.userList.presenter',
@@ -43,6 +44,9 @@ const propTypes = {
   isMe: PropTypes.func.isRequired,
   userAriaLabel: PropTypes.string.isRequired,
   isActionsOpen: PropTypes.bool.isRequired,
+  hasVoice: PropTypes.bool.isRequired,
+  hasVideo: PropTypes.bool.isRequired,
+  requestHamkelasiAction: PropTypes.func.isRequired,
 };
 
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
@@ -56,6 +60,9 @@ const UserName = (props) => {
     isActionsOpen,
     isMe,
     user,
+	hasVoice,
+	hasVideo,
+	requestHamkelasiAction,
   } = props;
 
   if (compact) {
@@ -80,7 +87,49 @@ const UserName = (props) => {
   if (user.guest) {
     userNameSub.push(intl.formatMessage(messages.guest));
   }
-
+  
+  // added for Hamkelasi
+  const userIcons = [];
+  
+  /*//if(!isMe(user.userId) && user.role !== ROLE_MODERATOR)
+  {
+	  userIcons.push(
+		   <Icon key={'hand-icon-'+user.userId} iconName={hasVoice?'mute':'unmute'} onClick={
+				(e) => {
+					e.stopPropagation();
+					
+					console.warn(hasVoice?'mute':'unmute');
+					
+					if(hasVoice)
+					{
+						requestHamkelasiAction(user.userId, {action: 'stopWebcam'});
+					}
+					else
+					{
+						requestHamkelasiAction(user.userId, {action: 'startMic'});
+					}
+				}
+			} ishamkelasiicon="true" style={{fontSize: 14, marginRight: 3}}/>
+		);
+		
+	  userIcons.push(
+		<Icon key={'video-icon-'+user.userId} iconName={hasVideo?'video_off':'video'} onClick={
+			(e) => {
+				e.stopPropagation();
+				
+				if(hasVideo)
+				{
+					requestHamkelasiAction(user.userId, {action: 'stopWebcam'});
+				}
+				else
+				{
+					requestHamkelasiAction(user.userId, {action: 'startWebcam'});
+				}
+			}
+		} ishamkelasiicon="true" style={{fontSize: 14, marginRight: 3}}/>
+	  );
+  }*/
+  
   return (
     <div
       className={styles.userName}
@@ -94,6 +143,9 @@ const UserName = (props) => {
 &nbsp;
         </span>
         <i>{(isMe(user.userId)) ? `(${intl.formatMessage(messages.you)})` : ''}</i>
+		
+		{ userIcons }
+		
       </span>
       {
         userNameSub.length

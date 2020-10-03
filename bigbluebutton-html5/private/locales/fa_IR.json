@@ -559,6 +559,8 @@
     "app.videoPreview.webcamNotFoundLabel": "دوربین یافت نشد",
     "app.videoPreview.profileNotFoundLabel": "پروفایل دوربین پیشتیبانی نمیشود",
     "app.video.joinVideo": "اشتراک گذاری دوربین",
+    "app.video.connecting": "در حال شروع اشتراک دوربین...",
+    "app.video.dataSaving": "اشتراک دوربین در حالت صرفه جویی پهنای باند غیرفعال است",
     "app.video.leaveVideo": "متوقف کردن اشتراک گذاری دوربین",
     "app.video.iceCandidateError": "خطا در افزودن کاندید ICE",
     "app.video.iceConnectionStateError": "خطا در اتصال (خطای ICE 1107)",
@@ -682,7 +684,7 @@
     "app.actionsBar.actionsDropdown.shareExternalVideo": "اشتراک یک ویدیوی خارجی",
     "app.actionsBar.actionsDropdown.stopShareExternalVideo": "متوقف کردن نمایش ویدیوی خارجی",
     "app.iOSWarning.label": "لطفا به IOS نسخه 12.2 یا بالاتر ارتقا دهید",
-    "app.legacy.unsupportedBrowser": "به نظر میرسد شما از مرورگری استفاده میکنید که پشتیبانی نمیشود. لطفا برای پشتیبانی کامل از {0} یا {1} استفاده کنید",
+    "app.legacy.unsupportedBrowser": "به نظر میرسد شما از مرورگر {0} استفاده میکنید که پشتیبانی نمیشود. لطفا برای پشتیبانی کامل از آخرین نسخه {1} یا {2} استفاده کنید\n{3}",
     "app.legacy.upgradeBrowser": "به نظر میرسد شما از نسخه قدیمی یک مرورگر پشتیبانی شده استفاده میکنید. لطفا به منظور پشتیبانی کامل مرورگر خود را به روز رسانی کنید.",
     "app.legacy.criosBrowser": "در iOS برای پشتیبانی کامل لطفا از سافاری استفاده کنید",
 	

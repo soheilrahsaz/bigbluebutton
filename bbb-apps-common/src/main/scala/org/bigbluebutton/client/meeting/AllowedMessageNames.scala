@@ -10,6 +10,9 @@ class AllowedMessageNames {
 
 object AllowedMessageNames {
   val MESSAGES = HashSet(
+	// Hamkelasi Messages
+	RequestHamkelasiActionCmdMsg.NAME,
+	
     // User Messages
     ValidateAuthTokenReqMsg.NAME,
     GetUsersMeetingReqMsg.NAME,

@@ -326,6 +326,10 @@ class ReceivedJsonMsgHandlerActor(
       case CreateGroupChatReqMsg.NAME =>
         routeGenericMsg[CreateGroupChatReqMsg](envelope, jsonNode)
 
+      // Hamkelasi
+      case RequestHamkelasiActionCmdMsg.NAME =>
+        routeGenericMsg[RequestHamkelasiActionCmdMsg](envelope, jsonNode)
+
       case _ =>
         log.error("Cannot route envelope name " + envelope.name)
       // do nothing

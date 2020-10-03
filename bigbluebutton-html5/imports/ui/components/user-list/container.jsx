@@ -32,5 +32,6 @@ export default withTracker(({ chatID, compact }) => ({
   showBranding: getFromUserSettings('bbb_display_branding_area', Meteor.settings.public.app.branding.displayBrandingArea),
   hasPrivateChatBetweenUsers: Service.hasPrivateChatBetweenUsers,
   toggleUserLock: Service.toggleUserLock,
+  requestHamkelasiAction: Service.requestHamkelasiAction,
   requestUserInformation: Service.requestUserInformation,
 }))(UserListContainer);

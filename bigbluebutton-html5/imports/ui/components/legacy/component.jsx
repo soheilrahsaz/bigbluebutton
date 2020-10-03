@@ -73,10 +73,12 @@ const supportedBrowsers = ['chrome', 'firefox', 'safari', 'opera', 'edge'];
 export default class Legacy extends Component {
   constructor(props) {
     super(props);
-
-    const locale = navigator.languages ? navigator.languages[0] : false
+	
+    const locale = 'fa'/*
+	  || navigator.languages ? navigator.languages[0] : false
       || navigator.language
-      || Meteor.settings.public.app.defaultSettings.application.fallbackLocale;
+      || Meteor.settings.public.app.defaultSettings.application.fallbackLocale*/;
+
 
     const url = `/html5client/locale?locale=${locale}`;
 
@@ -103,7 +105,7 @@ export default class Legacy extends Component {
     const { messages, normalizedLocale, viewState } = this.state;
     const isSupportedBrowser = supportedBrowsers.includes(browser().name);
     const isChromeIos = browser().name === 'crios';
-
+	
     let messageId = isSupportedBrowser ? 'app.legacy.upgradeBrowser' : 'app.legacy.unsupportedBrowser';
     if (isChromeIos) messageId = 'app.legacy.criosBrowser';
 
@@ -116,8 +118,10 @@ export default class Legacy extends Component {
                 id={messageId}
                 description="Warning when someone joins with a browser that isnt supported"
                 values={{
-                  0: <a href="https://www.google.com/chrome/">Chrome</a>,
-                  1: <a href="https://getfirefox.com">Firefox</a>,
+				  0: browser().name + ' ' +browser().versionNumber,
+                  1: <a href="https://www.google.com/chrome/">Chrome</a>,
+                  2: <a href="https://getfirefox.com">Firefox</a>,
+				  3: <a href="https://hamkelasi.co/help/مرورگرهای_پشتیبانی_شده_کلاس_آنلاین" target="_blank">لیست مرورگرهای قابل استفاده برای کلاس آنلاین</a>
                 }}
               />
             </p>
@@ -127,18 +131,13 @@ export default class Legacy extends Component {
         return (
           <p className="browserWarning">
             {isChromeIos ? (
-              <span>Please use Safari on iOS for full support.</span>
+              <span>در iOS برای پشتیبانی کامل لطفا از سافاری استفاده کنید.</span>
             ) : (
               <span>
                 <span>
-                  It looks like you&#39;re using a browser that
-                  is not fully supported. Please use either
-                  {' '}
+				  به نظر میرسد شما از مرورگر  {browser().name + ' ' +browser().versionNumber} استفاده میکنید که پشتیبانی نمیشود.
+				  لطفا برای پشتیبانی کامل از آخرین نسخه <a href="https://www.google.com/chrome/">گوگل کروم</a> یا <a href="https://getfirefox.com">موزیلا فایرفاکس</a> استفاده کنید
                 </span>
-                <a href="https://www.google.com/chrome/">Chrome</a>
-                <span> or </span>
-                <a href="https://getfirefox.com">Firefox</a>
-                <span> for full support.</span>
               </span>
             )
             }

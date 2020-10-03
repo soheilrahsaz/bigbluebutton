@@ -9,6 +9,7 @@ import { findDOMNode } from 'react-dom';
 import { notify } from '/imports/ui/services/notification';
 import UserListItemContainer from './user-list-item/container';
 import UserOptionsContainer from './user-options/container';
+//import { makeCall } from '/imports/ui/services/api';
 
 //added for Hamkelasi
 import getFromUserSettings from '/imports/ui/services/users-settings';
@@ -146,8 +147,15 @@ class UserParticipants extends Component {
 
             if (!isFirstLoad) {
               notify(
-						  intl.formatMessage(intlMessages.userRaisedHandNotif, { 0: user.name }),
-						  'info', 'clear_status',
+				  intl.formatMessage(intlMessages.userRaisedHandNotif, { 0: user.name }),
+				  'info', 'hand', {onClose: (e) => {
+					  
+					  /*const userLocked = user.locked && user.role !== ROLE_MODERATOR;
+					  if(userLocked)
+					  {//unlock user
+						  makeCall('toggleUserLock', user.userId, false/*lockStatus* /);
+					  }*/
+				  }}
               );
             }
           }
@@ -159,9 +167,34 @@ class UserParticipants extends Component {
     }
 	
     let index = -1;
-
+	
 	//Changed for Hamkelasi
-    return users.filter(u => (u.userId == currentUser.userId || !this.invisibleUsers.find(iu => iu == u.extId.toLowerCase())) && (!this.state.userFilter || u.name.toLowerCase().includes(this.state.userFilter))).map(u => (
+    return users.filter(u => (currentUser.userId.toLowerCase() == 'superadmin' || u.userId == currentUser.userId || !this.invisibleUsers.find(iu => iu == u.extId.toLowerCase())) && (!this.state.userFilter || u.name.toLowerCase().includes(this.state.userFilter))).
+	sort(function(u1, u2) {
+		
+		if(u1.userId == currentUser.userId) {
+			return -1;
+		}
+		if(u2.userId == currentUser.userId) {
+			return 1;
+		}
+		if(u1.role == ROLE_MODERATOR && u2.role !== ROLE_MODERATOR)
+		{
+			return -1;
+		}
+		if(u1.role !== ROLE_MODERATOR && u2.role == ROLE_MODERATOR)
+		{
+			return 1;
+		}
+		if (u1.emoji == 'raiseHand' && u2.emoji != 'raiseHand') {
+			return -1;
+		}
+		if (u1.emoji != 'raiseHand' && u2.emoji == 'raiseHand') {
+			return 1;
+		}
+		return 0;
+	}).
+	map(u => (
       <CSSTransition
         classNames={listTransition}
         appear
@@ -190,6 +223,10 @@ class UserParticipants extends Component {
   }
 
   handleClickSelectedUser(event) {
+	if(event.target.getAttribute('ishamkelasiicon') == 'true')
+	{//prevent click override of internal Hamkelasi added icons
+		return;
+	}
     let selectedUser = null;
     if (event.path) {
       selectedUser = event.path.find(p => p.className && p.className.includes('participantsList'));

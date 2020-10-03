@@ -28,7 +28,7 @@ export function notify(message, type = 'default', icon, options, content, small)
   };
 
   if (!toast.isActive(lastToast.id) || !_.isEqual(lastToastProps, toastProps)) {
-    const id = toast(<Toast {...toastProps} />, settings);
+	const id = toast(<Toast {...toastProps} />, settings);
 
     lastToast = { id, ...toastProps };
 

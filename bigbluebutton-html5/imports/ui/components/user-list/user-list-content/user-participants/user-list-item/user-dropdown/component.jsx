@@ -134,6 +134,7 @@ const propTypes = {
   isThisMeetingLocked: PropTypes.bool.isRequired,
   getScrollContainerRef: PropTypes.func.isRequired,
   toggleUserLock: PropTypes.func.isRequired,
+  requestHamkelasiAction: PropTypes.func.isRequired,
 };
 const CHAT_ENABLED = Meteor.settings.public.chat.enabled;
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
@@ -622,6 +623,9 @@ class UserDropdown extends PureComponent {
       intl,
       isThisMeetingLocked,
       isMe,
+	  voiceUser,
+	  videoUser,
+	  requestHamkelasiAction,
     } = this.props;
 
     const {
@@ -655,6 +659,11 @@ class UserDropdown extends PureComponent {
         3: user.emoji,
       },
     );
+	
+	//console.warn('videoUser: ', videoUser);
+	
+	let hasVoice = voiceUser.isVoiceUser && !voiceUser.isMutes;
+	let hasVideo = videoUser && videoUser.isStreaming;
 
     const contents = (
       <div
@@ -674,6 +683,9 @@ class UserDropdown extends PureComponent {
               userAriaLabel,
               isActionsOpen,
               isMe,
+			  hasVoice,
+			  hasVideo,
+			  requestHamkelasiAction,
             }}
           />}
           {<UserIcons

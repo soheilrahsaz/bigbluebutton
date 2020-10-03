@@ -8,7 +8,7 @@ export default function toggleUserLock(userId, lock) {
   const REDIS_CONFIG = Meteor.settings.private.redis;
   const CHANNEL = REDIS_CONFIG.channels.toAkkaApps;
   const EVENT_NAME = 'LockUserInMeetingCmdMsg';
-
+  
   const { meetingId, requesterUserId: lockedBy } = extractCredentials(this.userId);
 
   check(lockedBy, String);

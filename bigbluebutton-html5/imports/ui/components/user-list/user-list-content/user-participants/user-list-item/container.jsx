@@ -14,7 +14,7 @@ export default withTracker(({ user }) => {
   const breakoutSequence = (findUserInBreakout || {}).sequence;
   const Meeting = Meetings.findOne({ meetingId: Auth.meetingID },
     { fields: { lockSettingsProps: 1 } });
-
+	
   return {
     user,
     isMe,
@@ -27,6 +27,7 @@ export default withTracker(({ user }) => {
     toggleVoice: UserListService.toggleVoice,
     removeUser: UserListService.removeUser,
     toggleUserLock: UserListService.toggleUserLock,
+    requestHamkelasiAction: UserListService.requestHamkelasiAction,
     changeRole: UserListService.changeRole,
     assignPresenter: UserListService.assignPresenter,
     getAvailableActions: UserListService.getAvailableActions,
@@ -35,5 +36,6 @@ export default withTracker(({ user }) => {
     getEmojiList: UserListService.getEmojiList(),
     getEmoji: UserListService.getEmoji(),
     hasPrivateChatBetweenUsers: UserListService.hasPrivateChatBetweenUsers,
+	videoUser: UserListService.getVideoUser(user.userId, Auth.meetingID),
   };
 })(UserListItemContainer);

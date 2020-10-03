@@ -76,10 +76,12 @@ with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
 				var ruleList = document.styleSheets[sSheet].cssRules;
 				for (var rule = 0; rule < ruleList.length; rule ++)
 				{
-					if(uniqueRules.indexOf(ruleList[rule].cssText) === -1)
+					let i = uniqueRules.indexOf(ruleList[rule].cssText); console.log(ruleList[rule].cssText);
+					if(i != -1)
 					{
-						uniqueRules.push(ruleList[rule].cssText);
+						uniqueRules.splice(i, 1);
 					}
+					uniqueRules.push(ruleList[rule].cssText);
 				}
 				document.styleSheets[sSheet].ownerNode.parentNode.removeChild(document.styleSheets[sSheet].ownerNode);
 			}
@@ -88,8 +90,12 @@ with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
 			style.type = 'text/css';
 			style.innerHTML = uniqueRules.join("\n");
 			document.getElementsByTagName('head')[0].appendChild(style);
-		}, 1000);
+		}, 10000);
 	};*/
+	history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
   </script>
   <script src="compatibility/adapter.js?v=VERSION" language="javascript"></script>
   <script src="compatibility/bowser.js?v=VERSION" language="javascript"></script>
