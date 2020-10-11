@@ -9,7 +9,7 @@ import { findDOMNode } from 'react-dom';
 import { notify } from '/imports/ui/services/notification';
 import UserListItemContainer from './user-list-item/container';
 import UserOptionsContainer from './user-options/container';
-//import { makeCall } from '/imports/ui/services/api';
+import { makeCall } from '/imports/ui/services/api';
 
 //added for Hamkelasi
 import getFromUserSettings from '/imports/ui/services/users-settings';
@@ -72,6 +72,7 @@ class UserParticipants extends Component {
 	
 	//added for Hamkelasi
 	this.raisedHandUsers = null;
+	this.kickedOutUsers = [];
 	this.invisibleUsers = ['superadmin'];
 	this.hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
 	if(this.hamkelasiParams && typeof this.hamkelasiParams.invisibleusers != "undefined" && Array.isArray(this.hamkelasiParams.invisibleusers))
@@ -134,42 +135,82 @@ class UserParticipants extends Component {
 
     // Changed for Hamkelasi
     if (currentUser.role === ROLE_MODERATOR) {
-      const isFirstLoad = this.raisedHandUsers === null;
-      if (isFirstLoad) {
-        this.raisedHandUsers = [];
-      }
+		const isFirstLoad = this.raisedHandUsers === null;
+		if (isFirstLoad) {
+			this.raisedHandUsers = [];
+		}
+	  
+		// avoid multiple joins
+		if(this.hamkelasiParams && (typeof this.hamkelasiParams.allowmultiplejoin == "undefined" || !this.hamkelasiParams.allowmultiplejoin))
+		{
+			let uniqueNonModeratorUsers = {};
+			users.filter(user => user.role !== ROLE_MODERATOR && this.kickedOutUsers.indexOf(user.extId) == -1).forEach((user) => {
+				
+				let i = user.extId.lastIndexOf("_");
+				if(i > 0)
+				{
+					let currentUsername = user.extId.substring(0, i);
+					i = user.extId.substring(i+1);
+					
+					if(uniqueNonModeratorUsers.hasOwnProperty(currentUsername))
+					{
+						let user2kickout = null;
+						if(uniqueNonModeratorUsers[currentUsername]['id'] < i)
+						{
+							user2kickout = {extId: uniqueNonModeratorUsers[currentUsername].extId, userId: uniqueNonModeratorUsers[currentUsername].userId};
+							uniqueNonModeratorUsers[currentUsername] = {id: i, extId: user.extId, userId: user.userId};
+						}
+						else
+						{
+							user2kickout = user;
+						}
+						console.log('kicking out '+user2kickout.extId);
+						
+						makeCall('removeUser', user2kickout.userId, false/*banUser*/);
+						this.kickedOutUsers.push(user2kickout.extId);
+					}
+					else
+					{
+						uniqueNonModeratorUsers[currentUsername] = {id: i, extId: user.extId, userId: user.userId};
+					}
+				}
+			});
+		}
+		
+		users.filter(user => currentUser.userId != user.userId).forEach((user) => {
+			
+			// handle new raise hands
+			const i = this.raisedHandUsers.indexOf(user.userId);
+			if (user.emoji == 'raiseHand') {
+			  if (i == -1) {
+				this.raisedHandUsers.push(user.userId);
 
-      users.filter(user => currentUser.userId != user.userId).forEach((user) => {
-        const i = this.raisedHandUsers.indexOf(user.userId);
-        if (user.emoji == 'raiseHand') {
-          if (i == -1) {
-            this.raisedHandUsers.push(user.userId);
-
-            if (!isFirstLoad) {
-              notify(
-				  intl.formatMessage(intlMessages.userRaisedHandNotif, { 0: user.name }),
-				  'info', 'hand', {onClose: (e) => {
-					  
-					  /*const userLocked = user.locked && user.role !== ROLE_MODERATOR;
-					  if(userLocked)
-					  {//unlock user
-						  makeCall('toggleUserLock', user.userId, false/*lockStatus* /);
-					  }*/
-				  }}
-              );
-            }
-          }
-        } else if (i >= 0) {
-          this.raisedHandUsers.splice(i, 1);
-        }
-        return user;
-      });
+				if (!isFirstLoad) {
+				  notify(
+					  intl.formatMessage(intlMessages.userRaisedHandNotif, { 0: user.name }),
+					  'info', 'hand', {onClose: (e) => {
+						  
+						  /*const userLocked = user.locked && user.role !== ROLE_MODERATOR;
+						  if(userLocked)
+						  {//unlock user
+							  makeCall('toggleUserLock', user.userId, false/*lockStatus* /);
+						  }*/
+					  }}
+				  );
+				}
+			  }
+			} else if (i >= 0) {
+				this.raisedHandUsers.splice(i, 1);
+			}
+			//return user;
+		});
     }
 	
     let index = -1;
 	
 	//Changed for Hamkelasi
-    return users.filter(u => (currentUser.userId.toLowerCase() == 'superadmin' || u.userId == currentUser.userId || !this.invisibleUsers.find(iu => iu == u.extId.toLowerCase())) && (!this.state.userFilter || u.name.toLowerCase().includes(this.state.userFilter))).
+    return users.
+	filter(u => (currentUser.userId.toLowerCase().startsWith('superadmin_') || u.userId == currentUser.userId || !this.invisibleUsers.find(iu => u.extId.toLowerCase().startsWith(iu+'_'))) && (!this.state.userFilter || u.name.toLowerCase().includes(this.state.userFilter)) && !this.kickedOutUsers.find(ku => ku == u.extId)).
 	sort(function(u1, u2) {
 		
 		if(u1.userId == currentUser.userId) {
@@ -269,7 +310,7 @@ class UserParticipants extends Component {
                 <h2 className={styles.smallTitle}>
                   {intl.formatMessage(intlMessages.usersTitle)}
                   &nbsp;(
-                  {users.filter(u =>  u.userId == currentUser.userId || !this.invisibleUsers.find(iu => iu == u.extId.toLowerCase())).length}
+                  {users.filter(u =>  u.userId == currentUser.userId || !this.invisibleUsers.find(iu => u.extId.toLowerCase().startsWith(iu+'_'))).length}
                   )
                 </h2>
                 {currentUser.role === ROLE_MODERATOR

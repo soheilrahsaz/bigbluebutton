@@ -36,8 +36,10 @@ class AudioManager {
 
     this.defineProperties({
       isMuted: false,
+      wasMuted: false,
       isConnected: false,
       isConnecting: false,
+      isReconnecting: false,
       isHangingUp: false,
       isListenOnly: false,
       isEchoTest: false,
@@ -153,6 +155,7 @@ class AudioManager {
   }
 
   joinAudio(callOptions, callStateCallback) {
+	  
     return this.bridge.joinAudio(callOptions,
       callStateCallback.bind(this)).catch((error) => {
       if (error.name === 'NotAllowedError') {
@@ -283,7 +286,7 @@ class AudioManager {
     this.isConnecting = true;
     this.isMuted = false;
     this.error = false;
-
+	
     return Promise.resolve();
   }
 
@@ -346,6 +349,13 @@ class AudioManager {
       logger.info({ logCode: 'audio_joined' }, 'Audio Joined');
       if (ENABLE_NETWORK_MONITORING) this.monitor();
     }
+	
+	// added for Hamkelasi
+	if(this.isReconnecting && !this.isEchoTest && this.isMuted != this.wasMuted)
+	{
+		window.parent.postMessage({ response: 'autoToggleMuteMicrophone' }, '*');
+	}
+	this.isReconnecting = false;
   }
 
   onTransferStart() {
@@ -417,6 +427,10 @@ class AudioManager {
           this.onAudioExit();
         }
       } else if (status === RECONNECTING) {
+		// added for Hamkelasi
+		this.wasMuted = this.isMuted;
+		this.isReconnecting = true;
+		
         logger.info({ logCode: 'audio_reconnecting' }, 'Attempting to reconnect audio');
         this.notify(this.intl.formatMessage(this.messages.info.RECONNECTING_AUDIO), true);
         this.playHangUpSound();
@@ -583,6 +597,7 @@ class AudioManager {
   unmute () {
     this.setSenderTrackEnabled(true);
   }
+  
 }
 
 const audioManager = new AudioManager();

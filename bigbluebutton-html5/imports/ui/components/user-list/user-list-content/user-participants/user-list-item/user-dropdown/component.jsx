@@ -250,7 +250,7 @@ class UserDropdown extends PureComponent {
       mountModal,
     } = this.props;
     const { showNestedOptions } = this.state;
-
+	
     const amIModerator = currentUser.role === ROLE_MODERATOR;
     const actionPermissions = getAvailableActions(amIModerator, meetingIsBreakout, user, voiceUser);
     const actions = [];
@@ -276,7 +276,7 @@ class UserDropdown extends PureComponent {
       && (!(currentUser.locked && disablePrivateChat)
         || hasPrivateChatBetweenUsers(currentUser.userId, user.userId)
         || user.role === ROLE_MODERATOR) && isMeteorConnected
-	  && (!this.hamkelasiParams || !this.hamkelasiParams.disableprivatechat);
+	  && (!this.hamkelasiParams || !this.hamkelasiParams.disableprivatechat || user.role === ROLE_MODERATOR);
 
     const { allowUserLookup } = Meteor.settings.public.app;
 	

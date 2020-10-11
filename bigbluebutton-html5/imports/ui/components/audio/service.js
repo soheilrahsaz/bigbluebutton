@@ -44,7 +44,7 @@ const toggleMuteMicrophone = () => {
   const user = VoiceUsers.findOne({
     meetingId: Auth.meetingID, intId: Auth.userID,
   }, { fields: { muted: 1 } });
-
+  
   if (user.muted) {
     logger.info({
       logCode: 'audiomanager_unmute_audio',
@@ -86,5 +86,5 @@ export default {
     { fields: { role: 1 } }).role === ROLE_MODERATOR,
   isVoiceUser,
   autoplayBlocked: () => AudioManager.autoplayBlocked,
-  handleAllowAutoplay: () => AudioManager.handleAllowAutoplay(),
+  handleAllowAutoplay: () => AudioManager.handleAllowAutoplay()
 };

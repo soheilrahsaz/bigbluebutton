@@ -12,6 +12,7 @@ import Service from '../service';
 const AudioControlsContainer = props => <AudioControls {...props} />;
 
 const processToggleMuteFromOutside = (e) => {
+	
   switch (e.data) {
     case 'c_mute': {
       makeCall('toggleVoice');
@@ -65,5 +66,5 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
   isVoiceUser: isVoiceUser(),
   handleToggleMuteMicrophone: () => toggleMuteMicrophone(),
   handleJoinAudio: () => (isConnected() ? joinListenOnly() : mountModal(<AudioModalContainer />)),
-  handleLeaveAudio,
+  handleLeaveAudio
 }))(AudioControlsContainer)));

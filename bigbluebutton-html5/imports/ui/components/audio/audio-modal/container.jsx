@@ -37,7 +37,8 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
 
   return ({
     closeModal: () => {
-      if (!Service.isConnecting()) mountModal(null);
+      if (!Service.isConnecting()) 
+		  mountModal(null);
     },
     joinMicrophone: () => {
       const call = new Promise((resolve, reject) => {

@@ -41,12 +41,30 @@ const propTypes = {
 };
 
 class AudioControls extends PureComponent {
+
+  constructor(props) {
+    super(props);
+  }
+  
   componentDidMount() {
-    const { processToggleMuteFromOutside } = this.props;
+    const { processToggleMuteFromOutside, handleToggleMuteMicrophone } = this.props;
     if (Meteor.settings.public.allowOutsideCommands.toggleSelfVoice
       || getFromUserSettings('bbb_outside_toggle_self_voice', false)) {
+		  
       window.addEventListener('message', processToggleMuteFromOutside);
     }
+	
+	// added for Hamkelasi
+	window.addEventListener('message', (e) => {
+		
+		try{
+			if(e.data.response == 'autoToggleMuteMicrophone')
+			{
+				console.info('autoToggleMuteMicrophone after reconnect');
+				handleToggleMuteMicrophone();
+			}
+		}catch(e){}
+	});
   }
 
   render() {
@@ -73,7 +91,7 @@ class AudioControls extends PureComponent {
         joinIcon = 'audio_on';
       }
     }
-
+	
     return (
       <span className={styles.container}>
         {showMute && isVoiceUser

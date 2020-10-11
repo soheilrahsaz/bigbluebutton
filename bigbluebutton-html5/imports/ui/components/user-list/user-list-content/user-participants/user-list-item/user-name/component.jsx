@@ -139,7 +139,7 @@ const UserName = (props) => {
     >
       <span className={styles.userNameMain}>
         <span>
-          {user.name}
+          {decodeURIComponent(user.name)}
 &nbsp;
         </span>
         <i>{(isMe(user.userId)) ? `(${intl.formatMessage(messages.you)})` : ''}</i>

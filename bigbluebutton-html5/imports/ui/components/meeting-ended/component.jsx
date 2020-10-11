@@ -13,6 +13,7 @@ import Users from '/imports/api/users';
 import AudioManager from '/imports/ui/services/audio-manager';
 import { meetingIsBreakout } from '/imports/ui/components/app/service';
 
+
 const intlMessage = defineMessages({
   410: {
     id: 'app.meeting.ended',
@@ -109,6 +110,8 @@ class MeetingEnded extends PureComponent {
       this.localUserRole = user.role;
     }
 
+	//added for Hamkelasi
+	this.hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
     this.setSelectedStar = this.setSelectedStar.bind(this);
     this.sendFeedback = this.sendFeedback.bind(this);
     this.shouldShowFeedback = getFromUserSettings('bbb_ask_for_feedback_on_logout', Meteor.settings.public.app.askForFeedbackOnLogout);
@@ -178,6 +181,12 @@ class MeetingEnded extends PureComponent {
     const noRating = selected <= 0;
 
     logger.info({ logCode: 'meeting_ended_code', extraInfo: { endedCode: code } }, 'Meeting ended component');
+	
+	if(this.hamkelasiParams && !this.shouldShowFeedback)
+	{
+		this.sendFeedback();
+		return;
+	}
 
     return (
       <div className={styles.parent}>

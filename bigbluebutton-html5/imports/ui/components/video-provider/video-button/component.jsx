@@ -92,8 +92,9 @@ const JoinVideoButton = ({
     }
 	
 	//added for Hamkelasi
-	let maxAllowedVideos = hamkelasiParams && hamkelasiParams.maxallowedvideos ? hamkelasiParams.maxallowedvideos : -1;
-	if(maxAllowedVideos >= 0)
+	//let maxAllowedVideos = hamkelasiParams && hamkelasiParams.maxallowedvideos ? hamkelasiParams.maxallowedvideos : -1;
+	//if(maxAllowedVideos >= 0)
+	if(hamkelasiParams)
 	{
 		if (btn.current.isBlinking()) {
 		  return notify(
