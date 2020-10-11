@@ -351,9 +351,9 @@ class AudioManager {
     }
 	
 	// added for Hamkelasi
-	if(this.isReconnecting && !this.isEchoTest && this.isMuted != this.wasMuted)
+	if(this.isReconnecting && !this.isEchoTest)
 	{
-		window.parent.postMessage({ response: 'autoToggleMuteMicrophone' }, '*');
+		window.parent.postMessage({ response: 'autoToggleMuteMicrophone', 'isMuted': this.isMuted, 'wasMuted': this.wasMuted }, '*');
 	}
 	this.isReconnecting = false;
   }

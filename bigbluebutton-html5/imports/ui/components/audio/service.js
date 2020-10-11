@@ -86,5 +86,7 @@ export default {
     { fields: { role: 1 } }).role === ROLE_MODERATOR,
   isVoiceUser,
   autoplayBlocked: () => AudioManager.autoplayBlocked,
-  handleAllowAutoplay: () => AudioManager.handleAllowAutoplay()
+  handleAllowAutoplay: () => AudioManager.handleAllowAutoplay(),
+  // added for Hamkelasi
+  isMeetingMuteOnStart: () => Meetings.findOne({ meetingId: Auth.meetingID }, { fields: { 'voiceProp.muteOnStart': 1 } }).voiceProp.muteOnStart
 };

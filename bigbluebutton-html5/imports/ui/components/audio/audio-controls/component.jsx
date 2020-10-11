@@ -28,6 +28,7 @@ const intlMessages = defineMessages({
 
 const propTypes = {
   processToggleMuteFromOutside: PropTypes.func.isRequired,
+  processAutoToggleMuteMicrophoneOnReconnect: PropTypes.func.isRequired,
   handleToggleMuteMicrophone: PropTypes.func.isRequired,
   handleJoinAudio: PropTypes.func.isRequired,
   handleLeaveAudio: PropTypes.func.isRequired,
@@ -47,7 +48,7 @@ class AudioControls extends PureComponent {
   }
   
   componentDidMount() {
-    const { processToggleMuteFromOutside, handleToggleMuteMicrophone } = this.props;
+    const { processToggleMuteFromOutside, processAutoToggleMuteMicrophoneOnReconnect } = this.props;
     if (Meteor.settings.public.allowOutsideCommands.toggleSelfVoice
       || getFromUserSettings('bbb_outside_toggle_self_voice', false)) {
 		  
@@ -55,16 +56,7 @@ class AudioControls extends PureComponent {
     }
 	
 	// added for Hamkelasi
-	window.addEventListener('message', (e) => {
-		
-		try{
-			if(e.data.response == 'autoToggleMuteMicrophone')
-			{
-				console.info('autoToggleMuteMicrophone after reconnect');
-				handleToggleMuteMicrophone();
-			}
-		}catch(e){}
-	});
+	window.addEventListener('message', processAutoToggleMuteMicrophoneOnReconnect);
   }
 
   render() {

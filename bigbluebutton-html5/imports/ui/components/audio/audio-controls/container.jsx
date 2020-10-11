@@ -34,6 +34,31 @@ const processToggleMuteFromOutside = (e) => {
   }
 };
 
+const processAutoToggleMuteMicrophoneOnReconnect = (e) => {
+	
+	try{
+		if(e.data.response == 'autoToggleMuteMicrophone')
+		{
+			if(Service.isMeetingMuteOnStart())
+			{
+				if(!e.data.wasMuted)
+				{
+					console.info('autoToggleMuteMicrophone after reconnect');
+					Service.toggleMuteMicrophone();
+				}
+			}
+			else
+			{
+				if(e.data.isMuted != e.data.wasMuted)
+				{
+					console.info('autoToggleMuteMicrophone after reconnect');
+					Service.toggleMuteMicrophone();
+				}
+			}
+		}
+	}catch(e){}
+};
+
 const handleLeaveAudio = () => {
   Service.exitAudio();
   logger.info({
@@ -53,10 +78,13 @@ const {
   isTalking,
   toggleMuteMicrophone,
   joinListenOnly,
+  // added for Hamkelasi
+  isMeetingMuteOnStart,
 } = Service;
 
 export default lockContextContainer(withModalMounter(withTracker(({ mountModal, userLocks }) => ({
   processToggleMuteFromOutside: arg => processToggleMuteFromOutside(arg),
+  processAutoToggleMuteMicrophoneOnReconnect: arg => processAutoToggleMuteMicrophoneOnReconnect(arg),
   showMute: isConnected() && !isListenOnly() && !isEchoTest() && !userLocks.userMic,
   muted: isConnected() && !isListenOnly() && isMuted(),
   inAudio: isConnected() && !isEchoTest(),
