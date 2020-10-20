@@ -195,6 +195,12 @@ class MeetingEnded extends PureComponent {
     const { intl, code } = this.props;
 
     logger.info({ logCode: 'meeting_ended_code', extraInfo: { endedCode: code } }, 'Meeting ended component, no feedback configured');
+	
+	if(this.hamkelasiParams)
+	{
+		this.confirmRedirect();
+		return;
+	}
 
     return (
       <div className={styles.parent}>
@@ -238,12 +244,6 @@ class MeetingEnded extends PureComponent {
 
     logger.info({ logCode: 'meeting_ended_code', extraInfo: { endedCode: code } }, 'Meeting ended component, feedback allowed');
 	
-	if(this.hamkelasiParams && !this.shouldShowFeedback)
-	{
-		this.sendFeedback();
-		return;
-	}
-
     return (
       <div className={styles.parent}>
         <div className={styles.modal}>
