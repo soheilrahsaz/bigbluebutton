@@ -11,7 +11,7 @@ trait RequestHamkelasiActionCmdMsgHdlr extends RightsManagementTrait {
 
   def handleRequestHamkelasiActionCmdMsg(msg: RequestHamkelasiActionCmdMsg) {
 
-    /*def build(meetingId: String, requesteeUserId: String, action: String): BbbCommonEnvCoreMsg = {
+    def build(meetingId: String, requesteeUserId: String, action: String): BbbCommonEnvCoreMsg = {
       val routing = Routing.addMsgToClientRouting(MessageTypes.BROADCAST_TO_MEETING, meetingId, requesteeUserId)
       val envelope = BbbCoreEnvelope(RequestHamkelasiActionEvtMsg.NAME, routing)
       val body = RequestHamkelasiActionEvtMsgBody(requesteeUserId, action)
@@ -23,6 +23,6 @@ trait RequestHamkelasiActionCmdMsgHdlr extends RightsManagementTrait {
 
     log.info("Request Hamkelasi action.  meetingId=" + props.meetingProp.intId + " requesteeUserId=" + msg.body.requesteeUserId + " action=" + msg.body.action)
     val event = build(props.meetingProp.intId, msg.body.requesteeUserId, msg.body.action)
-    outGW.send(event)*/
+    outGW.send(event)
   }
 }

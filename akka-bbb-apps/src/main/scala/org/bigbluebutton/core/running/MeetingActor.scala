@@ -8,7 +8,7 @@ import org.bigbluebutton.SystemConfiguration
 import org.bigbluebutton.core.apps.groupchats.GroupChatHdlrs
 import org.bigbluebutton.core.apps.presentationpod._
 import org.bigbluebutton.core.apps.users._
-//import org.bigbluebutton.core.apps.hamkelasi._
+import org.bigbluebutton.core.apps.hamkelasi._
 import org.bigbluebutton.core.apps.whiteboard.ClientToServerLatencyTracerMsgHdlr
 import org.bigbluebutton.core.domain._
 import org.bigbluebutton.core.util.TimeUtil
@@ -20,7 +20,7 @@ import org.bigbluebutton.core.apps.chat.ChatApp2x
 import org.bigbluebutton.core.apps.screenshare.ScreenshareApp2x
 import org.bigbluebutton.core.apps.presentation.PresentationApp2x
 import org.bigbluebutton.core.apps.users.UsersApp2x
-//import org.bigbluebutton.core.apps.hamkelasi.HamkelasiApp2x
+import org.bigbluebutton.core.apps.hamkelasi.HamkelasiApp2x
 import org.bigbluebutton.core.apps.sharednotes.SharedNotesApp2x
 import org.bigbluebutton.core.apps.whiteboard.WhiteboardApp2x
 import org.bigbluebutton.core.bus._
@@ -495,7 +495,7 @@ class MeetingActor(
 
       case m: UserActivitySignCmdMsg       => handleUserActivitySignCmdMsg(m)
 
-      //case m: RequestHamkelasiActionCmdMsg => handleRequestHamkelasiActionCmdMsg(m)
+      case m: RequestHamkelasiActionCmdMsg => handleRequestHamkelasiActionCmdMsg(m)
 
       case _                               => log.warning("***** Cannot handle " + msg.envelope.name)
     }
