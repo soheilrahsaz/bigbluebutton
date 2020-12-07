@@ -15,6 +15,11 @@ import userLeaving from '/imports/api/users/server/methods/userLeaving';
 
 const AVAILABLE_LOCALES = fs.readdirSync('assets/app/locales');
 
+process.on('uncaughtException', (err) => {
+  Logger.error(`uncaughtException: ${err}`);
+  process.exit(1);
+});
+
 Meteor.startup(() => {
   const APP_CONFIG = Meteor.settings.public.app;
   const INTERVAL_IN_SETTINGS = (Meteor.settings.public.pingPong.clearUsersInSeconds) * 1000;
@@ -22,6 +27,81 @@ Meteor.startup(() => {
   const env = Meteor.isDevelopment ? 'development' : 'production';
   const CDN_URL = APP_CONFIG.cdn;
   let heapDumpMbThreshold = 100;
+
+  const { customHeartbeat } = APP_CONFIG;
+
+  if (customHeartbeat) {
+    Logger.warn('Custom heartbeat functions are enabled');
+    // https://github.com/sockjs/sockjs-node/blob/1ef08901f045aae7b4df0f91ef598d7a11e82897/lib/transport/websocket.js#L74-L82
+    const newHeartbeat = function heartbeat() {
+      const currentTime = new Date().getTime();
+
+      // Skipping heartbeat, because websocket is sending data
+      if (currentTime - this.ws.lastSentFrameTimestamp < 10000) {
+        try {
+          Logger.info('Skipping heartbeat, because websocket is sending data', {
+            currentTime,
+            lastSentFrameTimestamp: this.ws.lastSentFrameTimestamp,
+            userId: this.session.connection._meteorSession.userId,
+          });
+          return;
+        } catch (err) {
+          Logger.error(`Skipping heartbeat error: ${err}`);
+        }
+      }
+
+      const supportsHeartbeats = this.ws.ping(null, () => clearTimeout(this.hto_ref));
+      if (supportsHeartbeats) {
+        this.hto_ref = setTimeout(() => {
+          try {
+            Logger.info('Heartbeat timeout', { userId: this.session.connection._meteorSession.userId, sentAt: currentTime, now: new Date().getTime() });
+          } catch (err) {
+            Logger.error(`Heartbeat timeout error: ${err}`);
+          }
+        }, Meteor.server.options.heartbeatTimeout);
+      } else {
+        Logger.error('Unexpected error supportsHeartbeats=false');
+      }
+    };
+
+    // https://github.com/davhani/hagty/blob/6a5c78e9ae5a5e4ade03e747fb4cc8ea2df4be0c/faye-websocket/lib/faye/websocket/api.js#L84-L88
+    const newSend = function send(data) {
+      try {
+        this.lastSentFrameTimestamp = new Date().getTime();
+
+        if (this.meteorHeartbeat) {
+          // Call https://github.com/meteor/meteor/blob/1e7e56eec8414093cd0c1c70750b894069fc972a/packages/ddp-common/heartbeat.js#L80-L88
+          this.meteorHeartbeat._seenPacket = true;
+          if (this.meteorHeartbeat._heartbeatTimeoutHandle) {
+            this.meteorHeartbeat._clearHeartbeatTimeoutTimer();
+          }
+        }
+
+        if (this.readyState > 1/* API.OPEN = 1 */) return false;
+        if (!(data instanceof Buffer)) data = String(data);
+        return this._driver.messages.write(data);
+      } catch (err) {
+        console.error('Error on send data', err);
+        return false;
+      }
+    };
+
+    Meteor.setInterval(() => {
+      for (const session of Meteor.server.sessions.values()) {
+        const { socket } = session;
+        const recv = socket._session.recv;
+
+        if (session.bbbFixApplied || !recv || !recv.ws) {
+          continue;
+        }
+
+        recv.ws.meteorHeartbeat = session.heartbeat;
+        recv.__proto__.heartbeat = newHeartbeat;
+        recv.ws.__proto__.send = newSend;
+        session.bbbFixApplied = true;
+      }
+    }, 5000);
+  }
 
   const memoryMonitoringSettings = Meteor.settings.private.memoryMonitoring;
   if (memoryMonitoringSettings.stat.enabled) {
