@@ -12,10 +12,24 @@ export default function validateAuthToken(meetingId, requesterUserId, requesterT
 
   // Check if externalId is banned from the meeting
   if (externalId) {
+	  
     if (BannedUsers.has(meetingId, externalId)) {
       Logger.warn(`A banned user with extId ${externalId} tried to enter in meeting ${meetingId}`);
       return { invalid: true, reason: 'User has been banned', error_type: 'user_banned' };
     }
+	else 
+	//Added for Hamkelasi
+	if(externalId.match(/^.+(_[0-9]+)$/g))
+	{
+		externalId = externalId.split('_');
+		externalId.pop();
+		externalId = externalId.join('_');
+		 //check user ban after removing _num suffix from external id
+		if (BannedUsers.has(meetingId, externalId)) {
+			Logger.warn(`A Hamkelasi banned user with extId ${externalId} tried to enter in meeting ${meetingId}`);
+			return { invalid: true, reason: 'User has been banned', error_type: 'user_banned' };
+		}
+	}
   }
 
   // Prevent users who have left or been ejected to use the same sessionToken again.

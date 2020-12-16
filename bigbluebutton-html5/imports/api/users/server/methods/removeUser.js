@@ -22,7 +22,18 @@ export default function removeUser(userId, banUser) {
 
   const removedUser = Users.findOne({ meetingId, userId }, { extId: 1 });
 
-  if (banUser && removedUser) BannedUsers.add(meetingId, removedUser.extId);
+  if (banUser && removedUser) {
+	  BannedUsers.add(meetingId, removedUser.extId);
+	  //Added for hamkelasi
+	  if(removedUser.extId.match(/^.+(_[0-9]+)$/g))
+	  {
+		  let extId = removedUser.extId.split('_');
+		  extId.pop();
+		  extId = extId.join('_');
+		  //ban user after removing _num suffix from external id
+		  BannedUsers.add(meetingId, extId);
+	  }
+  }
 
   return RedisPubSub.publishUserMessage(CHANNEL, EVENT_NAME, meetingId, ejectedBy, payload);
 }
