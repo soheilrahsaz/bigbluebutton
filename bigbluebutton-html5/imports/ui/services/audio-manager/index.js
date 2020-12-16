@@ -1,5 +1,6 @@
 import { Tracker } from 'meteor/tracker';
 import KurentoBridge from '/imports/api/audio/client/bridge/kurento';
+
 import Auth from '/imports/ui/services/auth';
 import VoiceUsers from '/imports/api/voice-users';
 import SIPBridge from '/imports/api/audio/client/bridge/sip';
@@ -212,7 +213,7 @@ class AudioManager {
 
     const exitKurentoAudio = () => {
       if (this.useKurento) {
-        window.kurentoExitAudio();
+        bridge.exitAudio();
         const audio = document.querySelector(MEDIA_TAG);
         audio.muted = false;
       }
@@ -233,7 +234,7 @@ class AudioManager {
           audioBridge: bridgeInUse,
           retries,
         },
-      }, `Listen only error - ${err} - bridge: ${bridgeInUse}`);
+      }, `Listen only error - ${errorReason} - bridge: ${bridgeInUse}`);
     };
 
     logger.info({ logCode: 'audiomanager_join_listenonly', extraInfo: { logType: 'user_action' } }, 'user requested to connect to audio conference as listen only');
@@ -394,6 +395,7 @@ class AudioManager {
         error,
         bridgeError,
         silenceNotifications,
+        bridge,
       } = response;
 
       if (status === STARTED) {
@@ -411,6 +413,7 @@ class AudioManager {
           extraInfo: {
             errorCode: error,
             cause: bridgeError,
+            bridge,
           },
         }, `Audio error - errorCode=${error}, cause=${bridgeError}`);
         if (silenceNotifications !== true) {

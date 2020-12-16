@@ -3,10 +3,14 @@ import Redis from 'redis';
 import { Meteor } from 'meteor/meteor';
 import { EventEmitter2 } from 'eventemitter2';
 import { check } from 'meteor/check';
+import fs from 'fs';
 import Logger from './logger';
+import Metrics from './metrics';
 
 // Fake meetingId used for messages that have no meetingId
 const NO_MEETING_ID = '_';
+
+const { queueMetrics } = Meteor.settings.private.redis.metrics;
 
 const makeEnvelope = (channel, eventName, header, body, routing) => {
   const envelope = {
@@ -48,6 +52,7 @@ class MeetingMessageQueue {
     const isAsync = this.asyncMessages.includes(channel)
       || this.asyncMessages.includes(eventName);
 
+    const beginHandleTimestamp = Date.now();
     let called = false;
 
     check(eventName, String);
@@ -59,6 +64,14 @@ class MeetingMessageQueue {
         Logger.debug(`Redis: ${eventName} completed ${isAsync ? 'async' : 'sync'}`);
       }
       called = true;
+
+      if (queueMetrics) {
+        const queueId = meetingId || NO_MEETING_ID;
+        const dataLength = JSON.stringify(data).length;
+
+        Metrics.processEvent(queueId, eventName, dataLength, beginHandleTimestamp);
+      }
+
       const queueLength = this.queue.length();
       if (queueLength > 100) {
         Logger.warn(`Redis: MeetingMessageQueue for meetingId=${meetingId} has queue size=${queueLength} `);
@@ -117,6 +130,10 @@ class RedisPubSub {
     } else {
       this.pub = Redis.createClient({ host, port });
       this.sub = Redis.createClient({ host, port });
+    }
+
+    if (queueMetrics) {
+      Metrics.startDumpFile();
     }
 
     this.emitter = new EventEmitter2();
@@ -181,6 +198,10 @@ class RedisPubSub {
     }
 
     const queueId = meetingId || NO_MEETING_ID;
+
+    if (queueMetrics) {
+      Metrics.addEvent(queueId, eventName, message.length);
+    }
 
     if (!(queueId in this.mettingsQueues)) {
       this.mettingsQueues[meetingId] = new MeetingMessageQueue(this.emitter, async, this.redisDebugEnabled);
