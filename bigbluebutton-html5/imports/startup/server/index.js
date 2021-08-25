@@ -87,7 +87,7 @@ Meteor.startup(() => {
       }
     };
 
-    Meteor.setInterval(() => {
+    /*Meteor.setInterval(() => {
       for (const session of Meteor.server.sessions.values()) {
         const { socket } = session;
         const recv = socket._session.recv;
@@ -101,7 +101,24 @@ Meteor.startup(() => {
         recv.ws.__proto__.send = newSend;
         session.bbbFixApplied = true;
       }
-    }, 5000);
+    }, 5000);*/
+	
+	Meteor.setInterval(() => {
+	   const sessions = Object.keys(Meteor.server.sessions).map(key => Meteor.server.sessions[key]);
+		for (const session of sessions) {
+		  const { socket } = session;
+		  const recv = socket._session.recv;
+
+		  if (session.bbbFixApplied || !recv || !recv.ws) {
+			continue;
+		  }
+
+		  recv.ws.meteorHeartbeat = session.heartbeat;
+		  recv.__proto__.heartbeat = newHeartbeat;
+		  recv.ws.__proto__.send = newSend;
+		  session.bbbFixApplied = true;
+		}
+	  }, 5000);
   }
 
   const memoryMonitoringSettings = Meteor.settings.private.memoryMonitoring;

@@ -29,6 +29,7 @@
   grid-gap: 1px;
 
   justify-content: center;
+  height: 100%;
 
   @include mq($medium-up) {
     grid-gap: 2px;
