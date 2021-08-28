@@ -7,7 +7,11 @@ import UserNotesContainer from './user-notes/container';
 import UserCaptionsContainer from './user-captions/container';
 import WaitingUsers from './waiting-users/component';
 import UserPolls from './user-polls/component';
+import ClassInfo from './class-info/component';
 import BreakoutRoomItem from './breakout-room/component';
+
+//Added for Hamkelasi
+import getFromUserSettings from '/imports/ui/services/users-settings';
 
 const propTypes = {
   compact: PropTypes.bool,
@@ -31,6 +35,14 @@ const CHAT_ENABLED = Meteor.settings.public.chat.enabled;
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
 
 class UserContent extends PureComponent {
+	
+	constructor() {
+		super();
+
+		//added for Hamkelasi
+		this.hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
+  }
+	
   render() {
     const {
       compact,
@@ -49,11 +61,25 @@ class UserContent extends PureComponent {
       startedChats,
     } = this.props;
 
+	const hamkelasiParams = this.hamkelasiParams;
+
     return (
       <div
         data-test="userListContent"
         className={styles.content}
       >
+	  
+	  { hamkelasiParams && typeof hamkelasiParams.classinfo != "undefined" && Array.isArray(hamkelasiParams.classinfo) && hamkelasiParams.classinfo.length ?
+			(
+				<ClassInfo 
+				  {...{
+					intl,
+					compact,
+					hamkelasiParams,
+				  } }/>
+			) : null
+		}
+	  
         {CHAT_ENABLED
           ? (<UserMessages
             {...{

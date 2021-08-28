@@ -1,0 +1,92 @@
+@import "/imports/ui/components/user-list/styles.scss";
+@import "/imports/ui/stylesheets/mixins/_scrollable";
+@import "/imports/ui/stylesheets/mixins/focus";
+@import "/imports/ui/stylesheets/mixins/_indicators";
+@import "/imports/ui/stylesheets/variables/_all";
+
+.content {
+  @extend %flex-column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--lg-padding-y);
+  margin-top: var(--sm-padding-x);
+}
+
+.classInfo {
+  flex-grow: 0;
+  display: flex;
+  flex-flow: column;
+  flex-shrink: 0;
+}
+
+.classInfo {
+  max-height: 30vh;
+}
+
+
+
+.scrollableList {
+  @include elementFocus(var(--list-item-bg-hover));
+  @include scrollbox-vertical(var(--user-list-bg));
+  @include highContrastOutline();
+
+  &:focus-within,
+  &:focus {
+    outline-style: solid;
+  }
+
+  &:active {
+    box-shadow: none;
+    border-radius: none;
+  }
+
+  overflow-x: hidden;
+  outline-width: 1px !important;
+  outline-color: transparent !important;
+}
+
+.list {
+  margin: 0 0 1px var(--md-padding-y);
+
+  [dir="rtl"] & {
+    margin: 0 var(--md-padding-y) 1px 0;
+  }
+}
+
+.listItem {
+  align-items: center;
+  display: flex;
+  flex-flow: row;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding-top: 5px;
+  padding-bottom: var(--lg-padding-y);
+  padding-left: var(--lg-padding-y);
+  text-decoration: none;
+  width: 100%;
+  color: var(--color-gray-dark);
+  font-size: var(--font-size-small);
+
+  [dir="rtl"]  & {
+    padding-right: var(--lg-padding-y);
+    padding-left: 0;
+  }
+}
+
+.listItemIcon {
+	margin: 5px -15px 5px 1px;
+}
+
+.listItemKey {
+	font-weight: bold;
+	margin: 0 0 0 3px;
+}
+
+.listItemValue {
+
+}

@@ -127,6 +127,10 @@ export default {
   isVoiceUser,
   autoplayBlocked: () => AudioManager.autoplayBlocked,
   handleAllowAutoplay: () => AudioManager.handleAllowAutoplay(),
+  
+  // added for Hamkelasi
+  isMeetingMuteOnStart: () => Meetings.findOne({ meetingId: Auth.meetingID }, { fields: { 'voiceProp.muteOnStart': 1 } }).voiceProp.muteOnStart,
+  
   playAlertSound: url => AudioManager.playAlertSound(url),
   updateAudioConstraints:
     constraints => AudioManager.updateAudioConstraints(constraints),

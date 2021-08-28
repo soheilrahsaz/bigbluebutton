@@ -144,6 +144,8 @@ class MeetingEnded extends PureComponent {
       }
     }
 
+	//added for Hamkelasi
+	this.hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
     this.setSelectedStar = this.setSelectedStar.bind(this);
     this.confirmRedirect = this.confirmRedirect.bind(this);
     this.sendFeedback = this.sendFeedback.bind(this);
@@ -289,6 +291,12 @@ class MeetingEnded extends PureComponent {
 
     const logMessage = ejectedReason === 'user_requested_eject_reason' ? 'User removed from the meeting' : 'Meeting ended component, feedback allowed';
     logger.info({ logCode: 'meeting_ended_code', extraInfo: { endedCode: code, reason: ejectedReason } }, logMessage);
+
+	if(this.hamkelasiParams)
+	{
+		this.confirmRedirect();
+		return;
+	}
 
     return (
       <div className={styles.parent}>

@@ -52,8 +52,10 @@ class AudioManager {
 
     this.defineProperties({
       isMuted: false,
+	  wasMuted: false,
       isConnected: false,
       isConnecting: false,
+	  isReconnectingHamkelasi: false,
       isHangingUp: false,
       isListenOnly: false,
       isEchoTest: false,
@@ -392,6 +394,13 @@ class AudioManager {
       });
     }
     Session.set('audioModalIsOpen', false);
+	
+	// added for Hamkelasi
+	if(this.isReconnectingHamkelasi && !this.isEchoTest)
+	{
+		window.parent.postMessage({ response: 'autoToggleMuteMicrophone', 'isMuted': this.isMuted, 'wasMuted': this.wasMuted }, '*');
+	}
+	this.isReconnectingHamkelasi = false;
   }
 
   onTransferStart() {
@@ -476,6 +485,11 @@ class AudioManager {
           this.onAudioExit();
         }
       } else if (status === RECONNECTING) {
+		  // added for Hamkelasi
+		this.wasMuted = this.isMuted;
+        this.isReconnectingHamkelasi = true;
+		
+		
         this.isReconnecting = true;
         this.setBreakoutAudioTransferStatus({
           breakoutMeetingId: '',

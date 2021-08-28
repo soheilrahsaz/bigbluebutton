@@ -214,3 +214,34 @@
        url('fonts/SourceSansPro/SourceSansPro-BoldItalic.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: bold;
+    src: url('/fonts/IRANSansWeb/IRANSansWeb-Bold.woff') format('woff');  /* All Major Browsers */
+}
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: 500;
+    src: url('/fonts/IRANSansWeb/IRANSansWeb-Medium.woff') format('woff');  /* All Major Browsers */
+}
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: 300;
+    src: url('/fonts/IRANSansWeb/IRANSansWeb-Light.woff') format('woff');  /* All Major Browsers */
+}
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: 200;
+    src: url('/fonts/IRANSansWeb/IRANSansWeb-UltraLight.woff') format('woff');  /* All Major Browsers */
+}
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: normal;
+    src: url('/fonts/IRANSansWeb/IRANSansWeb.woff') format('woff');  /* All Major Browsers */
+}

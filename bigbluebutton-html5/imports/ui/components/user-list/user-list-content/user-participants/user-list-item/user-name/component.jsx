@@ -65,11 +65,16 @@ const UserName = (props) => {
     isActionsOpen,
     isMe,
     user,
+	hasVoice,
+	hasVideo,
   } = props;
 
   if (compact) {
     return null;
   }
+  
+   // added for Hamkelasi
+  const userIcons = [];
 
   const userNameSub = [];
 
@@ -103,10 +108,11 @@ const UserName = (props) => {
     >
       <span aria-hidden className={styles.userNameMain}>
         <span>
-          {user.name}
+          {decodeURIComponent(user.name)}
 &nbsp;
         </span>
         <i>{(isMe(user.userId)) ? `(${intl.formatMessage(messages.you)})` : ''}</i>
+		{ userIcons }
       </span>
       {
         userNameSub.length

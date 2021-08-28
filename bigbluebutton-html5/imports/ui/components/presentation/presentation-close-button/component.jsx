@@ -12,6 +12,9 @@ const intlMessages = defineMessages({
 
 const ClosePresentationComponent = ({ intl, toggleSwapLayout }) => (
   <Button
+	style={{
+		left: 40,
+	}}
     color="primary"
     icon="minus"
     size="sm"
@@ -21,6 +24,8 @@ const ClosePresentationComponent = ({ intl, toggleSwapLayout }) => (
     aria-label={intl.formatMessage(intlMessages.closePresentationLabel)}
     hideLabel
     className={styles.button}
+	
+	
   />
 );
 

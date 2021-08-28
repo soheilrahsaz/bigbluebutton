@@ -167,3 +167,21 @@
     max-height: 100%;
   }
 }
+
+
+.hamkelasiButton {
+  span:first-child {
+    box-shadow: 0 2px 5px 0 rgb(0, 0, 0);
+	background-color: #20C5DA;
+	padding: 2px 0px 0px 0px;
+	width: 40px;
+	height: 40px;
+	i {
+		font-size: 29px;
+		display: inline;
+		background: #FAFAFA;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+  }
+}

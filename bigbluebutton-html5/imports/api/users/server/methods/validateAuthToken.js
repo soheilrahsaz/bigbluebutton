@@ -4,6 +4,7 @@ import Logger from '/imports/startup/server/logger';
 import upsertValidationState from '/imports/api/auth-token-validation/server/modifiers/upsertValidationState';
 import { ValidationStates } from '/imports/api/auth-token-validation';
 import pendingAuthenticationsStore from '../store/pendingAuthentications';
+import BannedUsers from '../store/bannedUsers';
 
 export default function validateAuthToken(meetingId, requesterUserId, requesterToken, externalId) {
   try {
@@ -25,6 +26,28 @@ export default function validateAuthToken(meetingId, requesterUserId, requesterT
     };
 
     Logger.info(`User '${requesterUserId}' is trying to validate auth token for meeting '${meetingId}' from connection '${this.connection.id}'`);
+
+	// Check if externalId is banned from the meeting
+	if (externalId) 
+	{
+		if (BannedUsers.has(meetingId, externalId))			
+		{
+		  Logger.warn(`A banned user with extId ${externalId} tried to enter in meeting ${meetingId}`);
+		  return { invalid: true, reason: 'User has been banned', error_type: 'user_banned' };
+		}else 
+		//Added for Hamkelasi
+		if(externalId.match(/^.+(_[0-9]+)$/g))
+		{
+			externalId = externalId.split('_');
+			externalId.pop();
+			externalId = externalId.join('_');
+			 //check user ban after removing _num suffix from external id
+			if (BannedUsers.has(meetingId, externalId)) {
+				Logger.warn(`A Hamkelasi banned user with extId ${externalId} tried to enter in meeting ${meetingId}`);
+				return { invalid: true, reason: 'User has been banned', error_type: 'user_banned' };
+			}
+		}
+	}
 
     return RedisPubSub.publishUserMessage(CHANNEL, EVENT_NAME, meetingId, requesterUserId, payload);
   } catch (err) {

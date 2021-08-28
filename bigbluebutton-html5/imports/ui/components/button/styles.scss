@@ -373,3 +373,36 @@
   font-size: var(--btn-jumbo-font-size);
   padding: var(--btn-jumbo-padding);
 }
+
+
+.blinking {
+  -webkit-animation: glowing 1500ms infinite;
+  -moz-animation: glowing 1500ms infinite;
+  -o-animation: glowing 1500ms infinite;
+  animation: glowing 1500ms infinite;
+  border-radius: 25px;
+}
+
+@-webkit-keyframes glowing {
+  0% { background-color: #B2EBF2; -webkit-box-shadow: 0 0 3px #B2EBF2; }
+  50% { background-color: #00BCD4; -webkit-box-shadow: 0 0 40px #00BCD4; }
+  100% { background-color: #B2EBF2; -webkit-box-shadow: 0 0 3px #B2EBF2; }
+}
+
+@-moz-keyframes glowing {
+  0% { background-color: #B2EBF2; -moz-box-shadow: 0 0 3px #B2EBF2; }
+  50% { background-color: #00BCD4; -moz-box-shadow: 0 0 40px #00BCD4; }
+  100% { background-color: #B2EBF2; -moz-box-shadow: 0 0 3px #B2EBF2; }
+}
+
+@-o-keyframes glowing {
+  0% { background-color: #B2EBF2; box-shadow: 0 0 3px #B2EBF2; }
+  50% { background-color: #00BCD4; box-shadow: 0 0 40px #00BCD4; }
+  100% { background-color: #B2EBF2; box-shadow: 0 0 3px #B2EBF2; }
+}
+
+@keyframes glowing {
+  0% { background-color: #B2EBF2; box-shadow: 0 0 3px #B2EBF2; }
+  50% { background-color: #00BCD4; box-shadow: 0 0 40px #00BCD4; }
+  100% { background-color: #B2EBF2; box-shadow: 0 0 3px #B2EBF2; }
+}

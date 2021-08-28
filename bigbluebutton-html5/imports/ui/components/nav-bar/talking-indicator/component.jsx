@@ -46,6 +46,8 @@ class TalkingIndicator extends PureComponent {
         muted,
         callerName,
       } = talkers[`${id}`];
+	  
+	  let decodedCallerName = decodeURIComponent(callerName);
 
       const style = {
         [styles.talker]: true,
@@ -57,7 +59,7 @@ class TalkingIndicator extends PureComponent {
 
       const ariaLabel = intl.formatMessage(talking
         ? intlMessages.isTalking : intlMessages.wasTalking, {
-        0: callerName,
+        0: decodedCallerName,
       });
 
       let icon = talking ? 'unmute' : 'blank';
@@ -65,12 +67,12 @@ class TalkingIndicator extends PureComponent {
 
       return (
         <Button
-          key={_.uniqueId(`${callerName}-`)}
+          key={_.uniqueId(`${decodedCallerName}-`)}
           className={cx(style)}
           onClick={() => this.handleMuteUser(voiceUserId)}
-          label={callerName}
+          label={decodedCallerName}
           tooltipLabel={!muted && amIModerator
-            ? `${intl.formatMessage(intlMessages.muteLabel)} ${callerName}`
+            ? `${intl.formatMessage(intlMessages.muteLabel)} ${decodedCallerName}`
             : null
           }
           data-test={talking ? 'isTalking' : 'wasTalking'}

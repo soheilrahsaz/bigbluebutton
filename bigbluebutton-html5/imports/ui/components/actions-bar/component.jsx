@@ -10,8 +10,16 @@ import ScreenshareButtonContainer from '/imports/ui/components/actions-bar/scree
 import AudioControlsContainer from '../audio/audio-controls/container';
 import JoinVideoOptionsContainer from '../video-provider/video-button/container';
 import PresentationOptionsContainer from './presentation-options/component';
+//added for Hamkelasi
+import HamkelasiActionsDropdown from './hamkelasi-actions-dropdown/component';
+
 
 class ActionsBar extends PureComponent {
+	
+	constructor(props) {
+		super(props);
+	}
+	
   render() {
     const {
       amIPresenter,
@@ -44,6 +52,15 @@ class ActionsBar extends PureComponent {
         }}
       >
         <div className={styles.left}>
+		  {
+			  <HamkelasiActionsDropdown {...{
+				amIPresenter,
+				amIModerator,
+				intl,
+				isMeteorConnected,
+			  }}
+			  />
+		  }
           <ActionsDropdown {...{
             amIPresenter,
             amIModerator,

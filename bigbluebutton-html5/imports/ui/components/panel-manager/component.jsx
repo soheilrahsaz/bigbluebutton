@@ -62,6 +62,10 @@ const USERLIST_MAX_WIDTH_PX = USERLIST_MAX_WIDTH;
 const CAPTIONS_MIN_WIDTH = DEFAULT_PANEL_WIDTH;
 const CAPTIONS_MAX_WIDTH = 400;
 
+// Variables for resizing shared class info.
+const CLASS_INFO_MIN_WIDTH = 150;
+const CLASS_INFO_MAX_WIDTH = 350;
+
 // Variables for resizing waiting users.
 const WAITING_MIN_WIDTH = 300;
 const WAITING_MAX_WIDTH = 350;

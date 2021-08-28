@@ -587,10 +587,11 @@ class PresentationArea extends PureComponent {
 
     return (
       <div
+		className={styles.presentationAreaBox}
         style={{
           position: 'absolute',
           width: svgDimensions.width < 0 ? 0 : svgDimensions.width,
-          height: svgDimensions.height < 0 ? 0 : svgDimensions.height,
+          height: svgDimensions.height < 0 ? 0 : svgDimensions.height - 50,
           textAlign: 'center',
           display: layoutSwapped ? 'none' : 'block',
         }}
@@ -815,7 +816,7 @@ class PresentationArea extends PureComponent {
 
     let toolbarWidth = 0;
     if (this.refWhiteboardArea) {
-      toolbarWidth = svgWidth;
+      toolbarWidth = svgWidth - 70;
     }
 
     return (
@@ -836,7 +837,7 @@ class PresentationArea extends PureComponent {
           <div
             className={styles.svgContainer}
             style={{
-              height: svgHeight + toolbarHeight,
+              height: svgHeight + toolbarHeight - 60,
             }}
           >
             {showSlide && svgWidth > 0 && svgHeight > 0

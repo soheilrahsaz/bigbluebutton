@@ -67,7 +67,9 @@ const currentParameters = [
   'bbb_show_public_chat_on_login',
   // OUTSIDE COMMANDS
   'bbb_outside_toggle_self_voice',
-  'bbb_outside_toggle_recording',
+  'bbb_outside_toggle_recording', 
+  // Hamkelasi
+  'hamkelasi_params',
 ];
 
 function valueParser(val) {

@@ -88,6 +88,16 @@ const defaultProps = {
 };
 
 export default class Button extends BaseButton {
+	
+	constructor(props) {
+    super(props);
+
+    // added for Hamkelasi
+    this._isBlinking = false;
+    this.blink = this.blink.bind(this);
+    this.isBlinking = this.isBlinking.bind(this);
+  }
+	
   _getClassNames() {
     const {
       size,
@@ -105,7 +115,8 @@ export default class Button extends BaseButton {
     propClassNames[styles.ghost] = ghost;
     propClassNames[styles.circle] = circle;
     propClassNames[styles.block] = block;
-
+	propClassNames[styles.blinking] = this._isBlinking;
+	
     return propClassNames;
   }
 
@@ -120,6 +131,7 @@ export default class Button extends BaseButton {
     delete remainingProps.block;
     delete remainingProps.hideLabel;
     delete remainingProps.tooltipLabel;
+	delete remainingProps.blinking;
 
     return remainingProps;
   }
@@ -140,7 +152,7 @@ export default class Button extends BaseButton {
       const buttonLabel = label || ariaLabel;
       return (
         <TooltipContainer
-          title={tooltipLabel || buttonLabel}
+          title={this._tooltipLabel || tooltipLabel || buttonLabel}
         >
           {this[renderFuncName]()}
         </TooltipContainer>
@@ -166,7 +178,7 @@ export default class Button extends BaseButton {
 
     return (
       <BaseButton
-        className={cx(this._getClassNames(), className)}
+        className={cx(this._getClassNames(), className, this._isBlinking ? styles.blinking : undefined)}
         {...remainingProps}
       >
         {this[renderLeftFuncName]()}
@@ -221,6 +233,7 @@ export default class Button extends BaseButton {
 
     classNames[styles.label] = true;
     classNames[styles.hideLabel] = hideLabel;
+	classNames[styles.blinking] = this._isBlinking;
 
     return (
       <span className={cx(classNames)}>
@@ -228,6 +241,18 @@ export default class Button extends BaseButton {
         {this.props.children}
       </span>
     );
+  }
+  
+   // added for Hamkelasi
+  blink(on, label = null) {
+	  this._tooltipLabel = on ? label : null;
+	  this._isBlinking = on;
+	  this.setState({});
+  }
+
+  // added for Hamkelasi
+  isBlinking() {
+	  return this._isBlinking;
   }
 }
 

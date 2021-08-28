@@ -31,6 +31,7 @@ import clearUsersPersistentData from '/imports/api/users-persistent-data/server/
 
 import clearWhiteboardMultiUser from '/imports/api/whiteboard-multi-user/server/modifiers/clearWhiteboardMultiUser';
 import Metrics from '/imports/startup/server/metrics';
+import BannedUsers from '/imports/api/users/server/store/bannedUsers';
 
 export default function meetingHasEnded(meetingId) {
   if (!process.env.BBB_HTML5_ROLE || process.env.BBB_HTML5_ROLE === 'frontend') {
@@ -64,6 +65,7 @@ export default function meetingHasEnded(meetingId) {
     clearWhiteboardMultiUser(meetingId);
     clearScreenshare(meetingId);
     clearUsersPersistentData(meetingId);
+	BannedUsers.delete(meetingId);
     Metrics.removeMeeting(meetingId);
 
     Logger.info(`Cleared Meetings with id ${meetingId}`);

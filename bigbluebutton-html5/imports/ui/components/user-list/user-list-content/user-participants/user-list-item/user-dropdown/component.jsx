@@ -21,6 +21,12 @@ import UserIcons from '../user-icons/component';
 import Service from '/imports/ui/components/user-list/service';
 import WhiteboardService from '/imports/ui/components/whiteboard/service';
 
+//added for Hamkelasi
+import HamkelasiModal from '/imports/ui/components/modal/hamkelasi/hamkelasi-modal/component';
+import Auth from '/imports/ui/services/auth';
+import getFromUserSettings from '/imports/ui/services/users-settings';
+import UserSettings from '/imports/api/users-settings';
+
 const messages = defineMessages({
   presenter: {
     id: 'app.userList.presenter',
@@ -168,6 +174,9 @@ class UserDropdown extends PureComponent {
     this.renderUserAvatar = this.renderUserAvatar.bind(this);
     this.resetMenuState = this.resetMenuState.bind(this);
     this.makeDropdownItem = this.makeDropdownItem.bind(this);
+	
+	//added for Hamkelasi
+	this.hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
 
     this.title = _.uniqueId('dropdown-title-');
     this.seperator = _.uniqueId('action-separator-');
@@ -272,9 +281,67 @@ class UserDropdown extends PureComponent {
       : allowedToChatPrivately
       && (!(currentUser.locked && disablePrivateChat)
         || hasPrivateChatBetweenUsers(currentUser.userId, user.userId)
-        || user.role === ROLE_MODERATOR) && isMeteorConnected;
+        || user.role === ROLE_MODERATOR) && isMeteorConnected
+		&& (!this.hamkelasiParams || !this.hamkelasiParams.disableprivatechat  || user.role === ROLE_MODERATOR);
 
     const { allowUserLookup } = Meteor.settings.public.app;
+	
+	//added for Hamkelasi
+	if(this.hamkelasiParams && typeof this.hamkelasiParams.useractions != "undefined")
+	{
+		if(!meetingIsBreakout && isMeteorConnected)
+		{
+			var addActions = function(that, action) {
+
+				actions.push(that.makeDropdownItem(
+						action.action,
+						action.title,//intl.formatMessage(actions.message, { 0: user.name }),
+						() => that.onActionsHide(mountModal(
+						  <HamkelasiModal
+							intl={intl}
+							user={user}
+							mid={that.hamkelasiParams.meetingid}
+							sid={that.hamkelasiParams.sid}
+							url={decodeURIComponent(that.hamkelasiParams.url)}
+							action={action.action}
+						  />,
+						)),
+						action.icon,
+					  ));
+			};
+
+			if(isMe(user.userId))
+			{
+				if(typeof this.hamkelasiParams.useractions.selfactions != "undefined" && Array.isArray(this.hamkelasiParams.useractions.selfactions) && this.hamkelasiParams.useractions.selfactions.length > 0)
+				{
+					for(var action of this.hamkelasiParams.useractions.selfactions)
+					{
+						addActions(this, action);
+					}
+					actions.push(<DropdownListSeparator key={_.uniqueId('list-separator-')} />);
+				}
+			}
+			else if(user.role === ROLE_MODERATOR)
+			{
+				if(typeof this.hamkelasiParams.useractions.moderatoractions != "undefined" && Array.isArray(this.hamkelasiParams.useractions.moderatoractions) && this.hamkelasiParams.useractions.moderatoractions.length > 0)
+				{
+					for(var action of this.hamkelasiParams.useractions.moderatoractions)
+					{
+						addActions(this, action);
+					}
+					actions.push(<DropdownListSeparator key={_.uniqueId('list-separator-')} />);
+				}
+			}
+			else if(typeof this.hamkelasiParams.useractions.nonmoderatoractions != "undefined" && Array.isArray(this.hamkelasiParams.useractions.nonmoderatoractions) && this.hamkelasiParams.useractions.nonmoderatoractions.length > 0)
+			{
+				for(var action of this.hamkelasiParams.useractions.nonmoderatoractions)
+				{
+					addActions(this, action);
+				}
+				actions.push(<DropdownListSeparator key={_.uniqueId('list-separator-')} />);
+			}
+		}
+	}
 
     if (showNestedOptions && isMeteorConnected) {
       if (allowedToChangeStatus) {

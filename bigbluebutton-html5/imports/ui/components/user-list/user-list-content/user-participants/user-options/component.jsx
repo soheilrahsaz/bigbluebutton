@@ -19,6 +19,11 @@ import { styles } from './styles';
 import { getUserNamesLink } from '/imports/ui/components/user-list/service';
 import Settings from '/imports/ui/services/settings';
 
+//added for Hamkelasi
+import HamkelasiModal from '/imports/ui/components/modal/hamkelasi/hamkelasi-modal/component';
+import Auth from '/imports/ui/services/auth';
+import getFromUserSettings from '/imports/ui/services/users-settings';
+
 const propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
@@ -153,6 +158,8 @@ class UserOptions extends PureComponent {
     this.onInvitationUsers = this.onInvitationUsers.bind(this);
     this.renderMenuItems = this.renderMenuItems.bind(this);
     this.onSaveUserNames = this.onSaveUserNames.bind(this);
+	
+	this.hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
   }
 
   onSaveUserNames() {
@@ -341,6 +348,39 @@ class UserOptions extends PureComponent {
         )
         : null),
     ]);
+	
+	//added for Hamkelasi
+	if(this.hamkelasiParams)
+	{
+		if(amIModerator)
+		{
+			if(typeof this.hamkelasiParams.classactions != "undefined" && Array.isArray(this.hamkelasiParams.classactions) && this.hamkelasiParams.classactions.length > 0)
+			{
+				this.menuItems.unshift(<DropdownListSeparator key={_.uniqueId('list-separator-')} />);
+
+				for(var action of this.hamkelasiParams.classactions)
+				{
+					this.menuItems.unshift(
+						<DropdownListItem
+							icon={action.icon}
+							label={action.title}
+							description={action.description}
+							key={action.action}
+							onClick={() => this.onActionsHide(mountModal(
+							  <HamkelasiModal
+								intl={intl}
+								mid={this.hamkelasiParams.meetingid}
+								sid={this.hamkelasiParams.sid}
+								url={decodeURIComponent(this.hamkelasiParams.url)}
+								action={action.action}
+							  />,
+							))}
+						  />
+					 );
+				}
+			}
+		}
+	}
 
     return this.menuItems;
   }

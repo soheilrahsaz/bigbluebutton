@@ -1,2 +1,4 @@
 Gruntfile.js
 public/compatibility/*
+*.js
+*.jsx

@@ -7,6 +7,10 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { styles } from './styles';
 import { validIOSVersion } from '/imports/ui/components/app/service';
 import { debounce } from 'lodash';
+import { notify } from '/imports/ui/services/notification';
+
+//Added for Hamkelasi
+import getFromUserSettings from '/imports/ui/services/users-settings';
 
 const intlMessages = defineMessages({
   joinVideo: {
@@ -53,6 +57,11 @@ const JoinVideoButton = ({
   disableReason,
   mountVideoPreview,
 }) => {
+	
+	 //added for Hamkelasi
+  const btn = React.createRef();
+  const hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
+  
   const exitVideo = () => hasVideoStream && !VideoService.isMultipleCamerasEnabled();
 
   const handleOnClick = debounce(() => {
@@ -62,8 +71,71 @@ const JoinVideoButton = ({
 
     if (exitVideo()) {
       VideoService.exitVideo();
-    } else {
-      mountVideoPreview();
+    } else 
+	{
+      //mountVideoPreview();
+	  
+		//added for Hamkelasi
+		//let maxAllowedVideos = hamkelasiParams && hamkelasiParams.maxallowedvideos ? hamkelasiParams.maxallowedvideos : -1;
+		//if(maxAllowedVideos >= 0)
+		if(hamkelasiParams)
+		{
+			if (btn.current.isBlinking()) {
+			  return notify(
+					intl.formatMessage(intlMessages.verificationInProgressWarning),
+					'warning',
+					'warning',
+				);
+			}
+		
+			let verificationTimeout = setTimeout(() => {
+				btn.current.blink(false);
+			}, 20000);
+
+			btn.current.blink(true, intl.formatMessage(intlMessages.verificationInProgressLabel));
+
+			let url = decodeURIComponent(hamkelasiParams.url)+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount';
+
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', url, true);
+			xhr.responseType = 'json';
+			xhr.onload = function() {
+
+				if (verificationTimeout) {
+				  clearTimeout(verificationTimeout);
+				  verificationTimeout = null;
+				}
+				btn.current.blink(false);
+
+				if (xhr.status == 200 && xhr.response.status == 0) {
+					//document.querySelectorAll('video').length
+					if(xhr.response.result)
+					{
+						mountVideoPreview();
+					}
+					else
+					{
+						return notify(
+							intl.formatMessage(intlMessages.maxAllowedVideosReached),
+							'error',
+							'warning',
+						  );
+					}
+				} else {
+					return notify(
+						intl.formatMessage(intlMessages.serviceCallError),
+						'error',
+						'warning',
+					  );
+				}
+			};
+			xhr.send();
+		}
+		else
+		{
+			mountVideoPreview();
+		}
+	  
     }
   }, JOIN_VIDEO_DELAY_MILLISECONDS);
 
@@ -75,6 +147,7 @@ const JoinVideoButton = ({
 
   return (
     <Button
+	  ref={btn}
       label={label}
       data-test={hasVideoStream ? 'leaveVideo' : 'joinVideo'}
       className={cx(hasVideoStream || styles.btn)}

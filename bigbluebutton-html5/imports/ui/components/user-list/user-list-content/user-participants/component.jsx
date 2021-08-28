@@ -13,6 +13,10 @@ import {
 import UserListItemContainer from './user-list-item/container';
 import UserOptionsContainer from './user-options/container';
 import Settings from '/imports/ui/services/settings';
+import { makeCall } from '/imports/ui/services/api';
+
+//added for Hamkelasi
+import getFromUserSettings from '/imports/ui/services/users-settings';
 
 const propTypes = {
   compact: PropTypes.bool,
@@ -53,6 +57,7 @@ class UserParticipants extends Component {
       selectedUser: null,
       isOpen: false,
       scrollArea: false,
+	  userFilter: null,
     };
 
     this.userRefs = [];
@@ -62,6 +67,16 @@ class UserParticipants extends Component {
     this.changeState = this.changeState.bind(this);
     this.rowRenderer = this.rowRenderer.bind(this);
     this.handleClickSelectedUser = this.handleClickSelectedUser.bind(this);
+	this.changeFilter = this.changeFilter.bind(this);
+	this.invisibleUsers = ['superadmin'];
+	this.hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
+	
+	if(this.hamkelasiParams && typeof this.hamkelasiParams.invisibleusers != "undefined" && Array.isArray(this.hamkelasiParams.invisibleusers))
+	{
+		this.invisibleUsers = this.invisibleUsers.concat(this.hamkelasiParams.invisibleusers);
+	}
+	this.filteredUsers = [];
+	this.kickedOutUsers = [];
   }
 
   componentDidMount() {
@@ -120,7 +135,7 @@ class UserParticipants extends Component {
       meetingIsBreakout,
     } = this.props;
     const { scrollArea } = this.state;
-    const user = users[index];
+    const user = this.filteredUsers[index];
     const isRTL = Settings.application.isRTL;
 
     return (
@@ -155,6 +170,10 @@ class UserParticipants extends Component {
   }
 
   handleClickSelectedUser(event) {
+	if(event.target.getAttribute('ishamkelasiicon') == 'true')
+	{//prevent click override of internal Hamkelasi added icons
+		return;
+	}
     let selectedUser = null;
     if (event.path) {
       selectedUser = event.path.find(p => p.className && p.className.includes('participantsList'));
@@ -173,6 +192,10 @@ class UserParticipants extends Component {
   changeState(ref) {
     this.setState({ selectedUser: ref });
   }
+  
+  changeFilter(filter) {
+	this.setState({ userFilter: filter ? filter.toLowerCase() : null });
+  }
 
   render() {
     const {
@@ -184,6 +207,80 @@ class UserParticipants extends Component {
       meetingIsBreakout,
     } = this.props;
     const { isOpen, scrollArea } = this.state;
+	
+	 if (currentUser.role === ROLE_MODERATOR) 
+	 {
+		// avoid multiple joins
+		if(this.hamkelasiParams && (typeof this.hamkelasiParams.allowmultiplejoin == "undefined" || !this.hamkelasiParams.allowmultiplejoin))
+		{
+			let uniqueNonModeratorUsers = {};
+			users.filter(user => user.role !== ROLE_MODERATOR && this.kickedOutUsers.indexOf(user.extId) == -1).forEach((user) => 
+			{
+				
+				let i = user.extId.lastIndexOf("_");
+				if(i > 0)
+				{
+					let currentUsername = user.extId.substring(0, i);
+					i = user.extId.substring(i+1);
+					
+					if(uniqueNonModeratorUsers.hasOwnProperty(currentUsername))
+					{
+						let user2kickout = null;
+						if(uniqueNonModeratorUsers[currentUsername]['id'] < i)
+						{
+							user2kickout = {extId: uniqueNonModeratorUsers[currentUsername].extId, userId: uniqueNonModeratorUsers[currentUsername].userId};
+							uniqueNonModeratorUsers[currentUsername] = {id: i, extId: user.extId, userId: user.userId};
+						}
+						else
+						{
+							user2kickout = user;
+						}
+						console.log('kicking out '+user2kickout.extId);
+						
+						makeCall('removeUser', user2kickout.userId, false/*banUser*/);
+						this.kickedOutUsers.push(user2kickout.extId);
+					}
+					else
+					{
+						uniqueNonModeratorUsers[currentUsername] = {id: i, extId: user.extId, userId: user.userId};
+					}
+				}
+			});
+		}
+		
+    }
+	
+	//added for hamkelasi
+	this.filteredUsers = users.filter(u => (currentUser.userId.toLowerCase().startsWith('superadmin_') 
+									|| u.userId == currentUser.userId || !this.invisibleUsers.find(iu => u.extId.toLowerCase().startsWith(iu+'_'))) 
+									&& (!this.state.userFilter || u.name.toLowerCase().includes(this.state.userFilter)) 
+									&& !this.kickedOutUsers.find(ku => ku == u.extId))
+								.sort(function(u1, u2) {
+									if(u1.userId == currentUser.userId) {
+										return -1;
+									}
+									if(u2.userId == currentUser.userId) {
+										return 1;
+									}
+									if(u1.role == ROLE_MODERATOR && u2.role !== ROLE_MODERATOR)
+									{
+										return -1;
+									}
+									if(u1.role !== ROLE_MODERATOR && u2.role == ROLE_MODERATOR)
+									{
+										return 1;
+									}
+									if (u1.emoji == 'raiseHand' && u2.emoji != 'raiseHand') {
+										return -1;
+									}
+									if (u1.emoji != 'raiseHand' && u2.emoji == 'raiseHand') {
+										return 1;
+									}
+									return 0;
+								});
+								
+	
+	let filteredUsersTemp = this.filteredUsers;
 
     return (
       <div className={styles.userListColumn}>
@@ -194,13 +291,15 @@ class UserParticipants extends Component {
                 <h2 className={styles.smallTitle}>
                   {intl.formatMessage(intlMessages.usersTitle)}
                   &nbsp;(
-                  {users.length}
+                  {users.filter(u => (currentUser.userId.toLowerCase().startsWith('superadmin_') 
+									|| u.userId == currentUser.userId || !this.invisibleUsers.find(iu => u.extId.toLowerCase().startsWith(iu+'_'))) 
+									&& !this.kickedOutUsers.find(ku => ku == u.extId)).length}
                   )
                 </h2>
                 {currentUser.role === ROLE_MODERATOR
                   ? (
                     <UserOptionsContainer {...{
-                      users,
+                      filteredUsersTemp,
                       clearAllEmojiStatus,
                       meetingIsBreakout,
                     }}
@@ -212,6 +311,11 @@ class UserParticipants extends Component {
             )
             : <hr className={styles.separator} />
         }
+		
+		<div className={styles.userSearchBoxContainer}>
+			<input type="text" className={styles.userSearchBox} placeholder="جستجو" onChange={(e) => this.changeFilter(e.target.value)}/>
+		</div>
+		
         <div
           className={styles.virtulizedScrollableList}
           tabIndex={0}
@@ -225,7 +329,7 @@ class UserParticipants extends Component {
               <List
                 {...{
                   isOpen,
-                  users,
+                  filteredUsersTemp,
                 }}
                 ref={(ref) => {
                   if (ref !== null) {
@@ -238,7 +342,7 @@ class UserParticipants extends Component {
                 }}
                 rowHeight={this.cache.rowHeight}
                 rowRenderer={this.rowRenderer}
-                rowCount={users.length}
+                rowCount={this.filteredUsers.length}
                 height={height - 1}
                 width={width - 1}
                 className={styles.scrollStyle}

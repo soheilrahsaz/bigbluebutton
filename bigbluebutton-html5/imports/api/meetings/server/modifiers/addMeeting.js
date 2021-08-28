@@ -10,6 +10,8 @@ import { initPads } from '/imports/api/common/server/etherpad';
 import { addAnnotationsStreamer } from '/imports/api/annotations/server/streamer';
 import { addCursorStreamer } from '/imports/api/cursor/server/streamer';
 import { addExternalVideoStreamer } from '/imports/api/external-videos/server/streamer';
+import BannedUsers from '/imports/api/users/server/store/bannedUsers';
+
 
 export default function addMeeting(meeting) {
   const meetingId = meeting.meetingProp.intId;
@@ -186,6 +188,8 @@ export default function addMeeting(meeting) {
 
       const { html5InstanceId } = meeting.systemProps;
       initPads(meetingId, html5InstanceId);
+	  
+	  BannedUsers.init(meetingId);
     } else if (numberAffected) {
       Logger.info(`Upserted meeting id=${meetingId}`);
     }

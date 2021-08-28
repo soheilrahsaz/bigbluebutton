@@ -223,7 +223,17 @@ class Auth {
         });
       }, CONNECTION_TIMEOUT);
 
-      makeCall('validateAuthToken', this.meetingID, this.userID, this.token, this.externUserID);
+      const result = await makeCall('validateAuthToken', this.meetingID, this.userID, this.token, this.externUserID);
+	  if (result && result.invalid)
+	  {
+        clearTimeout(validationTimeout);
+        reject({
+          error: 403,
+          description: result.reason,
+          type: result.error_type,
+        });
+        return;
+      }
 
       const authTokenSubscription = Meteor.subscribe('auth-token-validation', { meetingId: this.meetingID, userId: this.userID });
       Meteor.subscribe('current-user');
