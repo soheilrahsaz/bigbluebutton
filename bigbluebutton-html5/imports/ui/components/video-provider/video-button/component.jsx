@@ -41,6 +41,22 @@ const intlMessages = defineMessages({
     id: 'app.iOSWarning.label',
     description: 'message indicating to upgrade ios version',
   },
+  maxAllowedVideosReached: {
+    id: 'app.video.maxAllowedVideosReached',
+    description: 'maximum allowed videos has reached',
+  },
+  verificationInProgressLabel: {
+    id: 'app.video.verificationInProgressLabel',
+    description: 'verification in progress label',
+  },
+  verificationInProgressWarning: {
+    id: 'app.video.verificationInProgressWarning',
+    description: 'verification in progress warning',
+  },
+  serviceCallError: {
+    id: 'app.video.serviceCallError',
+    description: 'service call error',
+  },
 });
 
 const JOIN_VIDEO_DELAY_MILLISECONDS = 500;
@@ -93,7 +109,7 @@ const JoinVideoButton = ({
 			}, 20000);
 
 			btn.current.blink(true, intl.formatMessage(intlMessages.verificationInProgressLabel));
-
+ 
 			let url = decodeURIComponent(hamkelasiParams.url)+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount';
 
 			var xhr = new XMLHttpRequest();

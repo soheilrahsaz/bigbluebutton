@@ -178,7 +178,7 @@ export default class Button extends BaseButton {
 
     return (
       <BaseButton
-        className={cx(this._getClassNames(), className, this._isBlinking ? styles.blinking : undefined)}
+        className={cx(this._getClassNames(), className)}
         {...remainingProps}
       >
         {this[renderLeftFuncName]()}
@@ -199,7 +199,7 @@ export default class Button extends BaseButton {
 
     return (
       <BaseButton
-        className={cx(styles[size], styles.buttonWrapper, className)}
+        className={cx(styles[size], styles.buttonWrapper, className, this._isBlinking ? styles.blinking : undefined)}
         {...remainingProps}
       >
         {!iconRight ? null : this.renderLabel()}

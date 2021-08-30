@@ -818,5 +818,14 @@
     "app.debugWindow.form.enableAutoarrangeLayoutLabel": "Enable Auto Arrange Layout",
     "app.debugWindow.form.enableAutoarrangeLayoutDescription": "(it will be disabled if you drag or resize the webcams area)",
     "app.debugWindow.form.chatLoggerLabel": "Test Chat Logger Levels",
-    "app.debugWindow.form.button.apply": "Apply"
+    "app.debugWindow.form.button.apply": "Apply",
+	
+	"app.userList.classInfoTitle": "Class Info",
+	"app.actionsBar.hamkelasiActionsDropdown.actionsLabel": "Hamkelasi actions",
+	"app.hamkelasi.userList.menu.manageDisciplinalCases.label": "Disciplinal Cases",
+	"app.hamkelasi.userList.menu.manageGrades.label": "Grades",
+	"app.video.serviceCallError": "An error occured while checking maximum allowed simultaneously videos, please retry.",
+	"app.video.maxAllowedVideosReached": "Maximum allowed simultaneous videos are playing at the time and more videos can't be shared right now.",
+	"app.video.verificationInProgressLabel": "Checking video permissions...",
+	"app.video.verificationInProgressWarning": "Checking video permissions, please wait..."
 }

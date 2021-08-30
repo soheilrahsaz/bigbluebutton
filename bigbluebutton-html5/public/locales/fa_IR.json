@@ -814,7 +814,17 @@
     "app.debugWindow.form.enableAutoarrangeLayoutLabel": "چیدمان خودکار را فعال کنید",
     "app.debugWindow.form.enableAutoarrangeLayoutDescription": "(اگر منطقه وب کم ها را بکشید یا تغییر اندازه دهید غیرفعال می شود)",
     "app.debugWindow.form.chatLoggerLabel": "آزمایش سطح چت لاگر",
-    "app.debugWindow.form.button.apply": "اعمال"
+    "app.debugWindow.form.button.apply": "اعمال",
+	
+	"app.userList.classInfoTitle": "اطلاعات کلاس",
+	"app.actionsBar.hamkelasiActionsDropdown.actionsLabel": "امکانات همکلاسی",
+	"app.hamkelasi.userList.menu.manageDisciplinalCases.label": "موارد انظباطی",
+	"app.hamkelasi.userList.menu.manageGrades.label": "نمرات",
+	"app.video.serviceCallError": "خطایی حین بررسی تعداد ویدئوهای همزمان مجاز رخ داد، لطفا دوباره سعی کنید.",
+	"app.video.maxAllowedVideosReached": "در حال حاضر حداکثر تعداد ویدئوی همزمان در این جلسه به اشتراک گذاشته شده و امکان اشتراک ویدئوی بیشتر وجود ندارد.",
+	"app.video.verificationInProgressLabel": "در حال بررسی مجوز ارسال ویدئو...",
+	"app.video.verificationInProgressWarning": "در حال بررسی مجوز ارسال ویدئو، لطفا اندکی صبر کنید..."
+	
 
 }
 
