@@ -140,4 +140,5 @@ export default {
     .setBreakoutAudioTransferStatus(status),
   getBreakoutAudioTransferStatus: () => AudioManager
     .getBreakoutAudioTransferStatus(),
+  getStats: () => AudioManager.getStats(),
 };
