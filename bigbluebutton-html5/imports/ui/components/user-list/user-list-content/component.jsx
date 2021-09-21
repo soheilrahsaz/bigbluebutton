@@ -8,6 +8,7 @@ import UserCaptionsContainer from './user-captions/container';
 import WaitingUsers from './waiting-users/component';
 import UserPolls from './user-polls/component';
 import ClassInfo from './class-info/component';
+import HamkelasiInfo from './hamkelasi-info/component';
 import BreakoutRoomItem from './breakout-room/component';
 
 //Added for Hamkelasi
@@ -72,6 +73,17 @@ class UserContent extends PureComponent {
 	  { hamkelasiParams && typeof hamkelasiParams.classinfo != "undefined" && Array.isArray(hamkelasiParams.classinfo) && hamkelasiParams.classinfo.length ?
 			(
 				<ClassInfo 
+				  {...{
+					intl,
+					compact,
+					hamkelasiParams,
+				  } }/>
+			) : null
+		}
+		
+		{ hamkelasiParams && typeof hamkelasiParams.hamkelasiinfo != "undefined" && Array.isArray(hamkelasiParams.hamkelasiinfo) && hamkelasiParams.hamkelasiinfo.length ?
+			(
+				<HamkelasiInfo 
 				  {...{
 					intl,
 					compact,

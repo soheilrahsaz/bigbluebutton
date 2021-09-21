@@ -827,7 +827,9 @@
     "app.debugWindow.form.chatLoggerLabel": "Test Chat Logger Levels",
     "app.debugWindow.form.button.apply": "Apply",
 	
+	"app.notification.errorHelpUrlTitle": "How to fix",
 	"app.userList.classInfoTitle": "Class Info",
+	"app.userList.hamkelasiInfoTitle": "Online Class Help",
 	"app.actionsBar.hamkelasiActionsDropdown.actionsLabel": "Hamkelasi actions",
 	"app.hamkelasi.userList.menu.manageDisciplinalCases.label": "Disciplinal Cases",
 	"app.hamkelasi.userList.menu.manageGrades.label": "Grades",

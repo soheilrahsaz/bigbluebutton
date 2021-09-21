@@ -295,6 +295,7 @@
     }
 
     * div[class^="userList"] > div[class^="content"] {
+        div[class^="hamkelasiInfo"],
         div[class^="classInfo"],
 		div[class^="messages"] {
             background: #fff !important;

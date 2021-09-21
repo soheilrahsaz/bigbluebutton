@@ -1,4 +1,11 @@
 public:
+  hamkelasi:
+    errorUrl:
+      topClass: https://hamkelasi.co/support/help/errors/?utm_source=BBB&utm_medium=Errors&utm_campaign=TopClass
+      media: https://hamkelasi.co/support/help/errors/?utm_source=BBB&utm_medium=Errors&utm_campaign=MediaError
+      hardware: https://hamkelasi.co/support/help/errors/?utm_source=BBB&utm_medium=Errors&utm_campaign=HardwareError
+    requirementUrl: https://hamkelasi.co/support/help/requirement
+    onlineClassUrl: https://hamkelasi.co/support/help/online-class
   app:
     mobileFontSize: 16px
     desktopFontSize: 14px
@@ -99,10 +106,10 @@ public:
     defaultSettings:
       application:
         animations: true
-        chatAudioAlerts: false
+        chatAudioAlerts: true
         chatPushAlerts: false
-        userJoinAudioAlerts: false
-        userJoinPushAlerts: false
+        userJoinAudioAlerts: true
+        userJoinPushAlerts: true
         raiseHandAudioAlerts: true
         raiseHandPushAlerts: true
         guestWaitingAudioAlerts: true
@@ -118,7 +125,7 @@ public:
         # Users can individually set their preferred locale through Settings,
         # but on first page load overrideLocale will trump the browser's
         # preferred locale
-        overrideLocale: null
+        overrideLocale: fa
         #Audio constraints for microphone. Use this to control browser's
         #filters, such as AGC (Auto Gain Control) , Echo Cancellation,
         #Noise Supression, etc.

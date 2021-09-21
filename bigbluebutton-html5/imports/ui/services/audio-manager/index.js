@@ -13,6 +13,8 @@ import AudioErrors from './error-codes';
 import {Meteor} from "meteor/meteor";
 import browserInfo from '/imports/utils/browserInfo';
 
+import { defineMessages } from 'react-intl';
+
 const STATS = Meteor.settings.public.stats;
 const MEDIA = Meteor.settings.public.media;
 const MEDIA_TAG = MEDIA.mediaTag;
@@ -48,6 +50,13 @@ const FILTER_AUDIO_STATS = [
   'local-candidate',
   'transport',
 ];
+
+const intlMessages = defineMessages({
+  errorHelpUrlTitle: {
+    id: 'app.notification.errorHelpUrlTitle',
+    description: 'Title for error help url',
+  },
+});
 
 class AudioManager {
   constructor() {
@@ -491,7 +500,8 @@ class AudioManager {
           },
         }, `Audio error - errorCode=${error}, cause=${bridgeError}`);
         if (silenceNotifications !== true) {
-          this.notify(errorMsg, true);
+		  let errorMsgFull = errorMsg + (Meteor.settings.public.hamkelasi && Meteor.settings.public.hamkelasi.errorUrl && Meteor.settings.public.hamkelasi.errorUrl.media  ? ' <a target="_blank" href="'+Meteor.settings.public.hamkelasi.errorUrl.media+'" />'+this.intl.formatMessage(intlMessages.errorHelpUrlTitle)+'</a>' : '');
+          this.notify(errorMsgFull, true);
           this.exitAudio();
           this.onAudioExit();
         }

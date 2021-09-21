@@ -12,6 +12,8 @@ import AudioService from '/imports/ui/components/audio/service';
 import VideoService from '/imports/ui/components/video-provider/service';
 import ScreenshareService from '/imports/ui/components/screenshare/service';
 
+import getFromUserSettings from '/imports/ui/services/users-settings';
+
 const STATS = Meteor.settings.public.stats;
 const NOTIFICATION = STATS.notification;
 const STATS_INTERVAL = STATS.interval;
@@ -198,6 +200,22 @@ const getConnectionStatus = () => {
     };
   });
 
+  const currentUser = Users.findOne(
+    {
+      meetingId: Auth.meetingID,
+      userId: Auth.userID,
+    },
+    { fields: { extId: 1 } },
+  );
+  
+  let invisibleUsers = ['superadmin'];
+  let hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
+	
+  if(hamkelasiParams && typeof hamkelasiParams.invisibleusers != "undefined" && Array.isArray(hamkelasiParams.invisibleusers))
+  {
+	invisibleUsers = invisibleUsers.concat(hamkelasiParams.invisibleusers);
+  }
+
   return UsersPersistentData.find(
     { meetingId: Auth.meetingID },
     {
@@ -209,9 +227,13 @@ const getConnectionStatus = () => {
         avatar: 1,
         color: 1,
         loggedOut: 1,
+		extId: 1,
       },
     },
-  ).fetch().reduce((result, user) => {
+  ).fetch()
+  .filter(u => (currentUser.extId.toLowerCase().startsWith('superadmin_') 
+									|| u.extId == currentUser.extId || !invisibleUsers.find(iu => u.extId.toLowerCase().startsWith(iu+'_'))))
+  .reduce((result, user) => {
     const {
       userId,
       name,
@@ -220,7 +242,7 @@ const getConnectionStatus = () => {
       color,
       loggedOut,
     } = user;
-
+	
     const status = connectionStatus.find(status => status.userId === userId);
 
     if (status) {

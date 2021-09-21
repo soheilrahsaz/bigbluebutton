@@ -29,7 +29,9 @@ const Toast = ({
   message,
   content,
   small,
-}) => (
+}) => {
+	
+	return (
   <div
     className={cx(styles.toastContainer, small ? styles.smallToastContainer : null)}
   >
@@ -38,7 +40,7 @@ const Toast = ({
         <Icon iconName={icon || defaultIcons[type]} />
       </div>
       <div data-test="toastSmallMsg" className={cx(styles.message, small ? styles.smallMessage : null)}>
-        <span>{message}</span>
+		  {typeof message ==='object' ? (<span>{message}</span>): (<span dangerouslySetInnerHTML={{__html:message}}/>)}
       </div>
     </div>
     {content
@@ -52,7 +54,8 @@ const Toast = ({
       ) : null
     }
   </div>
-);
+)
+};
 
 export default Toast;
 

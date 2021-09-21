@@ -20,6 +20,10 @@ const intlMessages = defineMessages({
     id: 'app.audioModal.help.macNotAllowed',
     description: 'Text decription for mac needed to enable OS setting',
   },
+  errorHelpUrlTitle: {
+    id: 'app.notification.errorHelpUrlTitle',
+    description: 'Title for error help url',
+  },
 });
 
 class Help extends Component {
@@ -47,10 +51,14 @@ class Help extends Component {
         break;
     }
 
+	let helpUrl = Meteor.settings.public.hamkelasi && Meteor.settings.public.hamkelasi.errorUrl && Meteor.settings.public.hamkelasi.errorUrl.hardware ? Meteor.settings.public.hamkelasi.errorUrl.hardware : null;
+	
+
     return (
       <span className={styles.help}>
         <div className={styles.text}>
           { helpMessage }
+		  {helpUrl ? (<a style={{color: "red", margin: "10px"}} target="_blank" href={helpUrl}>{intl.formatMessage(intlMessages.errorHelpUrlTitle)}</a>) : null}
         </div>
         <div className={styles.enterAudio}>
           <Button
