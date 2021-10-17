@@ -75,6 +75,8 @@ const JoinVideoButton = ({
 }) => {
 	
 	 //added for Hamkelasi
+
+  VideoService.setIntl(intl);
   const btn = React.createRef();
   const hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
   
@@ -107,10 +109,25 @@ const JoinVideoButton = ({
 			let verificationTimeout = setTimeout(() => {
 				btn.current.blink(false);
 			}, 20000);
+			
+			booleanCallBack = res =>
+			{
+				if (verificationTimeout) {
+				  clearTimeout(verificationTimeout);
+				  verificationTimeout = null;
+				}
+				btn.current.blink(false);
+				
+				if(res)
+				{
+					mountVideoPreview();
+				}
+			};
 
 			btn.current.blink(true, intl.formatMessage(intlMessages.verificationInProgressLabel));
+			VideoService.isVideoAllowed(booleanCallBack);
  
-			let url = decodeURIComponent(hamkelasiParams.url)+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount';
+			/*let url = decodeURIComponent(hamkelasiParams.url)+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount';
 
 			var xhr = new XMLHttpRequest();
 			xhr.open('GET', url, true);
@@ -145,7 +162,7 @@ const JoinVideoButton = ({
 					  );
 				}
 			};
-			xhr.send();
+			xhr.send();*/
 		}
 		else
 		{

@@ -20,6 +20,7 @@ import {
   getSortingMethod,
   sortVideoStreams,
 } from '/imports/ui/components/video-provider/stream-sorting';
+import { defineMessages, injectIntl } from 'react-intl';
 
 const CAMERA_PROFILES = Meteor.settings.public.kurento.cameraProfiles;
 const MULTIPLE_CAMERAS = Meteor.settings.public.app.enableMultipleCameras;
@@ -51,6 +52,17 @@ const FILTER_VIDEO_STATS = [
 
 const TOKEN = '_';
 
+const intlMessages = defineMessages({
+  maxAllowedVideosReached: {
+    id: 'app.video.maxAllowedVideosReached',
+    description: 'maximum allowed videos has reached',
+  },
+  serviceCallError: {
+    id: 'app.video.serviceCallError',
+    description: 'service call error',
+  },
+});
+
 class VideoService {
   constructor() {
     this.defineProperties({
@@ -61,6 +73,7 @@ class VideoService {
       pageSize: 0,
     });
     this.userParameterProfile = null;
+	this.intl = null;
 
     this.isMobile = deviceInfo.isMobile;
     this.isSafari = browserInfo.isSafari;
@@ -123,11 +136,92 @@ class VideoService {
       });
     }
   }
+  
+  setIntl(intl)
+  {
+	  this.intl = intl;
+  }
+  
+  isVideoAllowed(booleanCallBack, currentState)
+  {
+	var intll = this.intl;
+	const hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
+	if(hamkelasiParams)
+	{
+		let url = decodeURIComponent(hamkelasiParams.url)+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount';
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', url, true);
+		xhr.responseType = 'json';
+		
+		xhr.onload = function() 
+		{
+			if (xhr.status == 200 &&  xhr.response.status == 0)
+			{
+				//document.querySelectorAll('video').length
+				if(xhr.response.result || (currentState && xhr.response.params.currentState == 'true'))
+				{
+					booleanCallBack(true);
+				}
+				else
+				{
+					booleanCallBack(false);
+					return notify(
+						intll.formatMessage(intlMessages.maxAllowedVideosReached),
+						'error',
+						'warning',
+					  );
+				}
+			} else {
+				booleanCallBack(false);
+				return notify(
+					intll.formatMessage(intlMessages.serviceCallError),
+					'error',
+					'warning',
+				  );
+			}
+		};
+		
+		xhr.send();
+	}else
+	{
+		booleanCallBack(true);
+	}
+			
+  }
 
   joinVideo(deviceId) {
-    this.deviceId = deviceId;
-    this.isConnecting = true;
-    Storage.setItem('isFirstJoin', false);
+	
+	let booleanCallBack = res =>
+	{
+		if(res)
+		{
+			this.deviceId = deviceId;
+			this.isConnecting = true;
+			Storage.setItem('isFirstJoin', false);
+			
+			setTimeout(() => {
+				let exitBooleanCallBack = res2 =>
+				{
+					if(!res2)
+					{
+						this.exitVideo();
+						console.log("Exiting Video After connection due to exceeding maxAllowedVideos.")
+					}
+				};
+				
+				this.isVideoAllowed(exitBooleanCallBack, true);
+			}, Math.random()*10000 + 5000);
+		}else
+		{
+			console.log("Double Checking webCam count failed! How about them tricks now?? :P")
+		}
+	};
+	
+	setTimeout(() => {
+		this.isVideoAllowed(booleanCallBack);
+	}, Math.random()*5000);
+    
   }
 
   joinedVideo() {
@@ -927,4 +1021,6 @@ export default {
   shouldRenderPaginationToggle: () => videoService.shouldRenderPaginationToggle(),
   getWebRtcPeers: () => videoService.getWebRtcPeers(),
   getStats: () => videoService.getStats(),
+  isVideoAllowed: (booleanCallBack) => videoService.isVideoAllowed(booleanCallBack),
+  setIntl: (intl) => videoService.setIntl(intl),
 };
