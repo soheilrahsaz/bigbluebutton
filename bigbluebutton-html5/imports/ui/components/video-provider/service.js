@@ -144,11 +144,16 @@ class VideoService {
   
   isVideoAllowed(booleanCallBack, currentState)
   {
+	  
 	var intll = this.intl;
 	const hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
 	if(hamkelasiParams)
 	{
-		let url = decodeURIComponent(hamkelasiParams.url)+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount';
+		let extMeetingId = Meetings.findOne({ meetingId: Auth.meetingID }, { fields: { 'meetingProp.extId': 1 } }).meetingProp.extId;
+	  
+		let url = decodeURIComponent(hamkelasiParams.url)
+		+'?host='+hamkelasiParams.host+'&meetingId='+hamkelasiParams.meetingid+'&action=getVideoCount&meetingIDStr='+encodeURIComponent(extMeetingId)
+		+(currentState ? '&currentState=true' : '');
 
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', url, true);

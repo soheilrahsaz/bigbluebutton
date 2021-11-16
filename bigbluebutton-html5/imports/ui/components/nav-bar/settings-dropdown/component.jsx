@@ -4,6 +4,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { withModalMounter } from '/imports/ui/components/modal/service';
 import EndMeetingConfirmationContainer from '/imports/ui/components/end-meeting-confirmation/container';
+import RebuildMeetingConfirmationContainer from '/imports/ui/components/rebuild-meeting-confirmation/container';
 import { makeCall } from '/imports/ui/services/api';
 import AboutContainer from '/imports/ui/components/about/container';
 import SettingsMenuContainer from '/imports/ui/components/settings/container';
@@ -88,6 +89,16 @@ const intlMessages = defineMessages({
   endMeetingDesc: {
     id: 'app.navBar.settingsDropdown.endMeetingDesc',
     description: 'Describes settings option closing the current meeting',
+  },
+  
+  
+  rebuildMeetingLabel: {
+    id: 'app.navBar.settingsDropdown.rebuildMeetingLabel',
+    description: 'Rebuild meeting options label',
+  },
+  rebuildMeetingDesc: {
+    id: 'app.navBar.settingsDropdown.rebuildMeetingDesc',
+    description: 'Describes settings option Rebuild the current meeting',
   },
 });
 
@@ -271,6 +282,16 @@ class SettingsDropdown extends PureComponent {
         )
         : null,
       shouldRenderLogoutOption,
+	  allowedToEndMeeting && isMeteorConnected
+        ? (<DropdownListItem
+          key="list-item-rebuild-meeting"
+          icon="redo"
+          label={intl.formatMessage(intlMessages.rebuildMeetingLabel)}
+          description={intl.formatMessage(intlMessages.rebuildMeetingDesc)}
+          onClick={() => mountModal(<EndMeetingConfirmationContainer />)}
+        />
+        )
+        : null,
     ]);
   }
 

@@ -102,7 +102,7 @@
     "app.userList.userOptions.muteAllExceptPresenterDesc": "بستن صدای همه کاربران در جلسه به جز ارائه دهنده",
     "app.userList.userOptions.unmuteAllLabel": "غیرفعال کردن امکان بستن صدای جلسه",
     "app.userList.userOptions.unmuteAllDesc": "صدای جلسه را باز میکند",
-    "app.userList.userOptions.lockViewersLabel": "قفل کردن کاربران",
+    "app.userList.userOptions.lockViewersLabel": "تنظیمات قفل کاربران",
     "app.userList.userOptions.lockViewersDesc": "غیرفعال کردن امکانات خاص برای شرکت کنندگان در جلسه",
     "app.userList.userOptions.guestPolicyLabel": "سیاست مهمان",
     "app.userList.userOptions.guestPolicyDesc": "تغییر تنظیم سیاست مهمان جلسه",
@@ -829,8 +829,16 @@
 	"app.video.serviceCallError": "خطایی حین بررسی تعداد ویدئوهای همزمان مجاز رخ داد، لطفا دوباره سعی کنید.",
 	"app.video.maxAllowedVideosReached": "در حال حاضر حداکثر تعداد ویدئوی همزمان در این جلسه به اشتراک گذاشته شده و امکان اشتراک ویدئوی بیشتر وجود ندارد.",
 	"app.video.verificationInProgressLabel": "در حال بررسی مجوز ارسال ویدئو...",
-	"app.video.verificationInProgressWarning": "در حال بررسی مجوز ارسال ویدئو، لطفا اندکی صبر کنید..."
+	"app.video.verificationInProgressWarning": "در حال بررسی مجوز ارسال ویدئو، لطفا اندکی صبر کنید...",
 	
-
+	"app.navBar.settingsDropdown.rebuildMeetingDesc": "جلسه کنونی را بازسازی میکند",
+    "app.navBar.settingsDropdown.rebuildMeetingLabel": "بازسازی جلسه",
+	
+	"app.rebuildMeeting.title": "بازسازی {0}",
+    "app.rebuildMeeting.description": "با بازسازی کلاس، یک کلاس جدید با تنظیمات کلاس قبلی براساس مدت زمان باقیمانده ایجاد شده و کاربران به صورت خودکار به کلاس جدید منتقل می شوند.پیش از بازسازی کلاس مطمئن شوید مشکل شما یکی از موارد زیر باشد، در غیر این صورت بازسازی کلاس هیچ تغییری ایجاد نخواهد کرد:",
+	"app.rebuildMeeting.yesLabel": "بله",
+    "app.rebuildMeeting.noLabel": "خیر"
+	
+	
 }
 

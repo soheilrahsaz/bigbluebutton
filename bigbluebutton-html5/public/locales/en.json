@@ -836,5 +836,15 @@
 	"app.video.serviceCallError": "An error occured while checking maximum allowed simultaneously videos, please retry.",
 	"app.video.maxAllowedVideosReached": "Maximum allowed simultaneous videos are playing at the time and more videos can't be shared right now.",
 	"app.video.verificationInProgressLabel": "Checking video permissions...",
-	"app.video.verificationInProgressWarning": "Checking video permissions, please wait..."
+	"app.video.verificationInProgressWarning": "Checking video permissions, please wait...",
+	
+	
+	"app.navBar.settingsDropdown.rebuildMeetingDesc": "جلسه کنونی را بازسازی میکند",
+    "app.navBar.settingsDropdown.rebuildMeetingLabel": "بازسازی جلسه",
+	
+	"app.rebuildMeeting.title": "Rebuild {0}",
+    "app.rebuildMeeting.description": "",
+	"app.rebuildMeeting.yesLabel": "Yes",
+    "app.rebuildMeeting.noLabel": "No"
+	
 }
