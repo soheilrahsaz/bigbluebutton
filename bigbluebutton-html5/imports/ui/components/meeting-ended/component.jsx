@@ -250,6 +250,15 @@ class MeetingEnded extends PureComponent {
     const logMessage = ejectedReason === 'user_requested_eject_reason' ? 'User removed from the meeting' : 'Meeting ended component, no feedback configured';
     logger.info({ logCode: 'meeting_ended_code', extraInfo: { endedCode: code, reason: ejectedReason } }, logMessage);
 
+	if(this.hamkelasiParams && this.props.code == 410)
+	{
+		this.confirmRedirect();
+		return;
+	}
+
+	console.log(this.props);
+	console.log(this.props.code);
+
     return (
       <div className={styles.parent}>
         <div className={styles.modal}>
@@ -292,7 +301,7 @@ class MeetingEnded extends PureComponent {
     const logMessage = ejectedReason === 'user_requested_eject_reason' ? 'User removed from the meeting' : 'Meeting ended component, feedback allowed';
     logger.info({ logCode: 'meeting_ended_code', extraInfo: { endedCode: code, reason: ejectedReason } }, logMessage);
 
-	if(this.hamkelasiParams)
+	if(this.hamkelasiParams && this.props.code == 410)
 	{
 		this.confirmRedirect();
 		return;

@@ -55,7 +55,7 @@ class RebuildMeetingComponent extends PureComponent {
             {
 				intl.formatMessage(intlMessages.rebuildMeetingDescription)
             }
-			<ul>
+			<ul style={{"textAlign": "start"}}>
 				<li>مشکل در کارایی تخته کلاس</li>
 				<li>قطع شدن صدای همه کاربران</li>
 				<li>عدم ایجاد اتاق های زیرمجموعه</li>
@@ -66,12 +66,13 @@ class RebuildMeetingComponent extends PureComponent {
           <div className={styles.footer}>
             <Button
               data-test="confirmEndMeeting"
-              color="primary"
+              
               className={styles.button}
               label={intl.formatMessage(intlMessages.yesLabel)}
               onClick={rebuildMeeting}
             />
             <Button
+			color="primary"
               label={intl.formatMessage(intlMessages.noLabel)}
               className={styles.button}
               onClick={closeModal}

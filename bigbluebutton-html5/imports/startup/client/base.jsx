@@ -96,7 +96,7 @@ class Base extends Component {
       meetingId: Auth.meetingID,
       validated: true,
       userId: { $ne: localUserId },
-    }, { fields: { name: 1, userId: 1 } });
+    }, { fields: { name: 1, userId: 1, extId: 1 } });
 
     users.observe({
       added: (user) => {
@@ -119,17 +119,30 @@ class Base extends Component {
         }
 
         if (userJoinPushAlerts) {
-          notify(
-            <FormattedMessage
-              id="app.notification.userJoinPushAlert"
-              description="Notification for a user joins the meeting"
-              values={{
-                0: user.name,
-              }}
-            />,
-            'info',
-            'user',
-          );
+			
+			let invisibleUsers = ['superadmin'];
+			let hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
+			
+			if(hamkelasiParams && typeof hamkelasiParams.invisibleusers != "undefined" && Array.isArray(hamkelasiParams.invisibleusers))
+			{
+				invisibleUsers = invisibleUsers.concat(hamkelasiParams.invisibleusers);
+			}
+			
+			if(!invisibleUsers.find(iu => user.extId.toLowerCase().startsWith(iu+'_')))
+			{
+				notify(
+					<FormattedMessage
+					  id="app.notification.userJoinPushAlert"
+					  description="Notification for a user joins the meeting"
+					  values={{
+						0: user.name,
+					  }}
+					/>,
+					'info',
+					'user',
+				  );
+			}
+			
         }
       },
     });

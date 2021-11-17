@@ -18,6 +18,7 @@ import DropdownListSeparator from '/imports/ui/components/dropdown/list/separato
 import ShortcutHelpComponent from '/imports/ui/components/shortcut-help/component';
 import withShortcutHelper from '/imports/ui/components/shortcut-help/service';
 import FullscreenService from '../../fullscreen-button/service';
+import getFromUserSettings from '/imports/ui/services/users-settings';
 
 import { styles } from '../styles';
 
@@ -234,6 +235,13 @@ class SettingsDropdown extends PureComponent {
     const shouldRenderLogoutOption = (isMeteorConnected && allowLogoutSetting)
       ? logoutOption
       : null;
+	  
+	const hamkelasiParams = getFromUserSettings('hamkelasi_params', null);
+	let showRebuildOption = allowedToEndMeeting && isMeteorConnected;
+	if(hamkelasiParams)
+	{
+		showRebuildOption = showRebuildOption && hamkelasiParams.enablerebuildinclass;
+	}		
 
     return _.compact([
       this.getFullscreenItem(),
@@ -270,6 +278,17 @@ class SettingsDropdown extends PureComponent {
         description={intl.formatMessage(intlMessages.hotkeysDesc)}
         onClick={() => mountModal(<ShortcutHelpComponent />)}
       />),
+	  showRebuildOption ? (<DropdownListSeparator key={_.uniqueId('list-separator-')} />) : null,
+	  showRebuildOption
+        ? (<DropdownListItem
+          key="list-item-rebuild-meeting"
+          icon="refresh"
+          label={intl.formatMessage(intlMessages.rebuildMeetingLabel)}
+          description={intl.formatMessage(intlMessages.rebuildMeetingDesc)}
+          onClick={() => mountModal(<RebuildMeetingConfirmationContainer />)}
+        />
+        )
+        : null,
       (isMeteorConnected ? <DropdownListSeparator key={_.uniqueId('list-separator-')} /> : null),
       allowedToEndMeeting && isMeteorConnected
         ? (<DropdownListItem
@@ -282,16 +301,6 @@ class SettingsDropdown extends PureComponent {
         )
         : null,
       shouldRenderLogoutOption,
-	  allowedToEndMeeting && isMeteorConnected
-        ? (<DropdownListItem
-          key="list-item-rebuild-meeting"
-          icon="redo"
-          label={intl.formatMessage(intlMessages.rebuildMeetingLabel)}
-          description={intl.formatMessage(intlMessages.rebuildMeetingDesc)}
-          onClick={() => mountModal(<EndMeetingConfirmationContainer />)}
-        />
-        )
-        : null,
     ]);
   }
 
